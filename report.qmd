@@ -1,0 +1,305 @@
+---
+title: "Trans Balkan Race 2026 — Race Plan"
+date: "2026-05-29"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: cosmo
+    embed-resources: true
+    fig-width: 12
+    fig-height: 4.5
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(xml2)
+library(knitr)
+
+# ── Parameters ────────────────────────────────────────────────────────────────
+
+GPX_FILE     <- "Trans Balkan Race 2026 __ Issue 1.GPX"
+RIDING_HOURS <- 16      # riding hours per day
+BASE_SPEED   <- 15      # km/h on flat terrain
+MAX_DESCENT  <- 32      # km/h cap on descents
+UPHILL_K     <- 0.08    # exponential speed penalty per % grade uphill
+DOWNHILL_K   <- 0.04    # exponential speed gain per % grade downhill
+
+race_start <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Paris")
+
+# ── Parse GPX ────────────────────────────────────────────────────────────────
+
+gpx  <- read_xml(GPX_FILE)
+ns   <- c(g = "http://www.topografix.com/GPX/1/1")
+pts  <- xml_find_all(gpx, ".//g:trkpt", ns)
+
+track <- tibble(
+  lat = as.numeric(xml_attr(pts, "lat")),
+  lon = as.numeric(xml_attr(pts, "lon")),
+  ele = as.numeric(xml_text(xml_find_first(pts, "g:ele", ns)))
+) |>
+  mutate(ele = zoo::rollmedian(ele, k = 31, fill = NA, align = "center")) |>
+  filter(!is.na(ele))
+
+haversine <- function(lat1, lon1, lat2, lon2) {
+  r    <- 6371
+  phi1 <- lat1 * pi / 180; phi2 <- lat2 * pi / 180
+  dphi <- (lat2 - lat1) * pi / 180
+  dlam <- (lon2 - lon1) * pi / 180
+  a    <- sin(dphi/2)^2 + cos(phi1)*cos(phi2)*sin(dlam/2)^2
+  2 * r * asin(sqrt(a))
+}
+
+segments <- track |>
+  mutate(
+    dist_km  = haversine(lag(lat), lag(lon), lat, lon),
+    ele_diff = ele - lag(ele),
+    grade    = pmax(pmin(ifelse(dist_km > 0, (ele_diff / (dist_km*1000))*100, 0), 30), -30)
+  ) |>
+  slice(-1) |>
+  filter(!is.na(dist_km), dist_km > 0) |>
+  mutate(
+    speed_kmh = case_when(
+      grade >= 0 ~ BASE_SPEED * exp(-UPHILL_K * grade),
+      grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)
+    ),
+    time_h   = dist_km / speed_kmh,
+    cum_dist = cumsum(dist_km),
+    cum_time = cumsum(time_h)
+  )
+
+total_dist  <- sum(segments$dist_km)
+total_climb <- sum(pmax(segments$ele_diff, 0), na.rm = TRUE)
+total_time  <- sum(segments$time_h)
+total_days  <- total_time / RIDING_HOURS
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+riding_time_at_dist <- function(dist_km) {
+  approx(segments$cum_dist, segments$cum_time, xout = dist_km, rule = 2)$y
+}
+
+wall_clock <- function(riding_time_h) {
+  day_num  <- pmax(ceiling(riding_time_h / RIDING_HOURS), 1)
+  hours_in <- riding_time_h - (day_num - 1) * RIDING_HOURS
+  race_start + days(day_num - 1) +
+    hours(floor(hours_in)) + minutes(round((hours_in %% 1) * 60))
+}
+
+# ── Daily breakdown ───────────────────────────────────────────────────────────
+
+checkpoints <- tribble(
+  ~name,             ~cum_dist_km,
+  "CP1 Mazin",              451,
+  "CP2 Kopilovi",          1060,
+  "Finish Risan",          1395
+)
+
+find_position <- function(time_limit) {
+  i   <- max(which(segments$cum_time <= time_limit))
+  rem <- time_limit - segments$cum_time[i]
+  list(
+    cum_dist = segments$cum_dist[i] + rem * segments$speed_kmh[min(i+1, nrow(segments))],
+    cum_time = time_limit
+  )
+}
+
+daily <- tibble(day = 1:ceiling(total_days), time_limit = day * RIDING_HOURS) |>
+  mutate(
+    pos      = map(time_limit, find_position),
+    cum_dist = map_dbl(pos, "cum_dist"),
+    date     = race_start + days(day - 1)
+  ) |>
+  select(-pos) |>
+  mutate(day_dist = cum_dist - lag(cum_dist, default = 0))
+
+# ── Resupply table ────────────────────────────────────────────────────────────
+
+resupply <- tribble(
+  ~location,              ~km,   ~type,         ~on_route,
+  "Kozina (SLO)",         16.6,  "Village",      TRUE,
+  "Slavnik (SLO)",        28.2,  "Mountain hut", TRUE,
+  "Dane (CRO)",           47.4,  "Fountain",     TRUE,
+  "Sveti Pavel (SLO)",    74.2,  "Fountain",     TRUE,
+  "Platak (CRO)",        141,    "Mountain hut", TRUE,
+  "Fužine (CRO)",        164,    "Village",      TRUE,
+  "Oltari (CRO)",        245,    "Fountain",     TRUE,
+  "Dom Zavižan (CRO)",   260,    "Mountain hut", TRUE,
+  "Gospić (CRO)",        345,    "City",         TRUE,
+  "CP1 Mazin (CRO)",     451,    "Checkpoint",   TRUE,
+  "Velika Popina (CRO)", 490,    "Fountain",     TRUE,
+  "Knin (CRO)",          537,    "City",         TRUE,
+  "Livno (BiH)",         664,    "Village",      TRUE,
+  "Šuica (BiH)",         701,    "Village",      TRUE,
+  "Mostar (BiH)",        812,    "City",         TRUE,
+  "Nevesinje (BiH)",     858,    "Village",      FALSE,
+  "Ulog (BiH)",          897,    "Village",      TRUE,
+  "Fountain (BiH)",      938,    "Fountain",     TRUE,
+  "Miljevina (BiH)",     990,    "Village",      FALSE,
+  "Popov Most (BiH)",   1034,    "Village",      TRUE,
+  "Brod (BiH)",         1055,    "Village",      TRUE,
+  "CP2 Kopilovi (BiH)", 1060,    "Checkpoint",   TRUE,
+  "Žabljak (MNE)",      1160,    "City",         TRUE,
+  "Njegovuđa (MNE)",    1170,    "Village",      TRUE,
+  "Kolašin (MNE)",      1228,    "City",         FALSE,
+  "Nikšić (MNE)",       1325,    "City",         TRUE,
+  "Risan / Finish",     1395,    "Finish",       TRUE
+) |>
+  mutate(
+    riding_h = map_dbl(km, riding_time_at_dist),
+    day_num  = pmax(ceiling(riding_h / RIDING_HOURS), 1),
+    arrival  = do.call(c, map(riding_h, wall_clock)),
+    gap_km   = km - lag(km, default = 0)
+  )
+```
+
+## Route overview
+
+```{r stats}
+tibble(
+  Metric = c("Total distance", "Total climb", "Total descent",
+             "Effective riding time", "Days at 16 h/day"),
+  Value  = c(
+    sprintf("%.0f km",  total_dist),
+    sprintf("%.0f m",   total_climb),
+    sprintf("%.0f m",   sum(pmax(-segments$ele_diff, 0), na.rm = TRUE)),
+    sprintf("%.1f h",   total_time),
+    sprintf("%.1f",     total_days)
+  )
+) |> kable(col.names = c("", ""))
+```
+
+**Start:** Trieste, Italy — Fri 29 May 2026, 09:00 CEST
+**Finish:** Risan, Kotor Bay, Montenegro
+**Model:** flat speed `r BASE_SPEED` km/h · uphill penalty `exp(−{r UPHILL_K} × grade%)` · descent capped at `r MAX_DESCENT` km/h
+
+## Elevation profile
+
+```{r elevation-profile, fig.height=4}
+elev_profile <- segments |>
+  mutate(day = factor(pmin(ceiling(cum_time / RIDING_HOURS), ceiling(total_days))))
+
+day_lines <- daily |>
+  filter(cum_dist < total_dist) |>
+  mutate(label = sprintf("Day %d\n%.0f km", day + 1, cum_dist))
+
+ggplot(elev_profile, aes(cum_dist, ele)) +
+  geom_area(aes(fill = day), alpha = 0.55) +
+  geom_vline(data = day_lines, aes(xintercept = cum_dist),
+             linetype = "dashed", colour = "grey40", linewidth = 0.35) +
+  geom_text(data = day_lines, aes(x = cum_dist, y = max(elev_profile$ele) * 0.95, label = label),
+            size = 2.8, hjust = 1.08, colour = "grey30") +
+  geom_vline(data = checkpoints, aes(xintercept = cum_dist_km),
+             linetype = "dotted", colour = "firebrick", linewidth = 0.5) +
+  geom_text(data = checkpoints, aes(x = cum_dist_km, y = 80, label = name),
+            size = 2.6, hjust = -0.05, colour = "firebrick") +
+  scale_fill_brewer(palette = "Set2", name = "Day") +
+  scale_x_continuous(breaks = seq(0, 1400, 100), minor_breaks = seq(0, 1400, 50)) +
+  labs(x = "Distance from start (km)", y = "Elevation (m)") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom", panel.grid.minor = element_line(linewidth = 0.2))
+```
+
+## Daily plan
+
+```{r daily-table}
+daily_tbl <- daily |>
+  mutate(
+    day_dist_fmt = sprintf("%.0f km", day_dist),
+    cum_dist_fmt = sprintf("%.0f km", pmin(cum_dist, total_dist)),
+    date_fmt     = format(date, "%a %d %b")
+  )
+
+# Add checkpoints column
+daily_tbl <- daily_tbl |>
+  rowwise() |>
+  mutate(
+    start_dist = if (day == 1) 0 else daily$cum_dist[day - 1],
+    cps = paste(
+      checkpoints$name[checkpoints$cum_dist_km > start_dist &
+                       checkpoints$cum_dist_km <= cum_dist],
+      collapse = ", "
+    )
+  ) |>
+  ungroup()
+
+# Truncate at finish
+finish_row <- which(daily_tbl$cum_dist >= total_dist)[1]
+daily_tbl  <- daily_tbl[1:finish_row, ]
+daily_tbl$cum_dist_fmt[finish_row] <- sprintf("%.0f km ✓", total_dist)
+
+daily_tbl |>
+  select(Day = day, Date = date_fmt,
+         `km/day` = day_dist_fmt, `Cum. km` = cum_dist_fmt,
+         Checkpoints = cps) |>
+  kable(align = c("c","l","r","r","l"))
+```
+
+## Resupply schedule
+
+Arrival times assume continuous riding of `r RIDING_HOURS` h/day starting at 09:00, with 8 h rest at the end of each riding day. Times marked \* are off-route stops.
+
+```{r resupply-table}
+resupply |>
+  mutate(
+    arrival_fmt = format(arrival, "%a %d %b %H:%M"),
+    location    = if_else(!on_route, paste0(location, " *"), location),
+    gap_km      = sprintf("%.0f", gap_km),
+    km          = sprintf("%.0f", km)
+  ) |>
+  select(
+    Location = location,
+    `km` = km,
+    `+km` = gap_km,
+    Type = type,
+    `Est. arrival (CEST)` = arrival_fmt
+  ) |>
+  kable(align = c("l","r","r","l","l")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(
+    which(resupply$type == "Checkpoint"),
+    bold = TRUE, background = "#fff3cd"
+  ) |>
+  kableExtra::row_spec(
+    nrow(resupply),
+    bold = TRUE, background = "#d4edda"
+  )
+```
+
+## Speed model
+
+The estimated times use a gradient-adjusted speed model:
+
+$$
+v(g) = \begin{cases}
+v_0 \cdot e^{-k_u \cdot g} & g \geq 0 \text{ (uphill)} \\
+\min\!\left(v_0 \cdot e^{-k_d \cdot g},\, v_{\max}\right) & g < 0 \text{ (downhill)}
+\end{cases}
+$$
+
+where $g$ is gradient in %, $v_0 =$ `r BASE_SPEED` km/h, $k_u =$ `r UPHILL_K`, $k_d =$ `r DOWNHILL_K`, $v_{\max} =$ `r MAX_DESCENT` km/h.
+
+```{r speed-curve, fig.height=3, fig.width=6}
+tibble(grade = seq(-20, 20, 0.1)) |>
+  mutate(speed = case_when(
+    grade >= 0 ~ BASE_SPEED * exp(-UPHILL_K * grade),
+    grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)
+  )) |>
+  ggplot(aes(grade, speed)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_vline(xintercept = 0, linetype = "dotted", colour = "grey50") +
+  geom_hline(yintercept = BASE_SPEED, linetype = "dotted", colour = "grey50") +
+  annotate("text", x = 0.4, y = BASE_SPEED + 0.8,
+           label = sprintf("flat: %.0f km/h", BASE_SPEED),
+           hjust = 0, size = 3, colour = "grey40") +
+  scale_x_continuous(breaks = seq(-20, 20, 5), labels = function(x) paste0(x, "%")) +
+  labs(x = "Gradient", y = "Speed (km/h)") +
+  theme_minimal(base_size = 11)
+```
+
+GPS elevation noise is suppressed with a rolling median (window = 31 points ≈ 300 m).
+Gradient is capped at ±30% before speed calculation.
