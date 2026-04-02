@@ -255,6 +255,76 @@ tibble(
 **Elevation cap:** `r MAX_DAILY_CLIMB` m gain/day, soft — only enforced after 00:30 (prevents bridge days)
 **Speed model:** flat `r BASE_SPEED` km/h · uphill exp(−`r UPHILL_K` × grade%) · descent capped `r MAX_DESCENT` km/h
 
+## Route map
+
+```{r route-map}
+library(leaflet)
+
+# Thin track for performance (~every 10th point)
+thin_idx <- seq(1, nrow(track), by = 10)
+track_thin <- track[thin_idx, ]
+
+# Assign day to each thinned point via cumulative time
+cum_time_thin <- approx(segments$cum_dist,segments$cum_time,
+                        xout = cumsum(c(0, haversine(head(track_thin$lat,-1), head(track_thin$lon,-1),
+                                                     tail(track_thin$lat,-1), tail(track_thin$lon,-1)))),
+                        rule = 2)$y
+track_thin$day <- pmin(findInterval(cum_time_thin, day_info$cum_riding) + 1L, nrow(day_info))
+
+day_colors <- RColorBrewer::brewer.pal(max(track_thin$day), "Set2")
+
+# Resupply markers
+resupply_icons <- awesomeIcons(
+  icon = case_when(
+    resupply$type == "Checkpoint" ~ "flag",
+    resupply$type == "City"       ~ "home",
+    resupply$type == "Finish"     ~ "flag-checkered",
+    TRUE                          ~ "tint"
+  ),
+  markerColor = case_when(
+    resupply$type == "Checkpoint" ~ "orange",
+    resupply$type == "City"       ~ "blue",
+    resupply$type == "Finish"     ~ "green",
+    TRUE                          ~ "lightblue"
+  ),
+  library = "fa"
+)
+
+# Resupply lat/lon from nearest track point
+resupply_coords <- map_dfr(resupply$km, function(d) {
+  idx <- which.min(abs(segments$cum_dist - d))
+  tibble(lat = segments$lat[idx], lon = segments$lon[idx])
+})
+
+m <- leaflet(width = "100%") |>
+  addProviderTiles(providers$OpenStreetMap) |>
+  addProviderTiles(providers$OpenTopoMap, group = "Topo") |>
+  addLayersControl(baseGroups = c("OpenStreetMap", "Topo"),
+                   options = layersControlOptions(collapsed = TRUE))
+
+# Add polylines per day
+for (d in sort(unique(track_thin$day))) {
+  pts <- track_thin[track_thin$day == d, ]
+  m <- m |> addPolylines(lng = pts$lon, lat = pts$lat,
+                         color = day_colors[d], weight = 3, opacity = 0.8,
+                         group = paste("Day", d),
+                         label = paste("Day", d))
+}
+
+# Add resupply markers
+m <- m |>
+  addAwesomeMarkers(
+    lng = resupply_coords$lon, lat = resupply_coords$lat,
+    icon = resupply_icons,
+    label = sprintf("%s (km %.0f, Day %d)", resupply$location, resupply$km, resupply$day_num),
+    popup = sprintf("<b>%s</b><br>km %.0f · %s<br>Day %d · %s",
+                    resupply$location, resupply$km, resupply$type,
+                    resupply$day_num, format(resupply$arrival, "%a %d %b %H:%M"))
+  )
+
+m
+```
+
 ## Elevation profile
 
 ```{r elevation-profile, fig.height=4}
