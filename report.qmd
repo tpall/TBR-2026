@@ -22,16 +22,20 @@ library(knitr)
 
 # ── Parameters ────────────────────────────────────────────────────────────────
 
-GPX_FILE     <- "Trans Balkan Race 2026 __ Issue 1.GPX"
-RIDING_HOURS <- 16      # riding hours per day
-BASE_SPEED   <- 15      # km/h on flat terrain
-MAX_DESCENT  <- 32      # km/h cap on descents
-UPHILL_K     <- 0.08    # exponential speed penalty per % grade uphill
-DOWNHILL_K   <- 0.04    # exponential speed gain per % grade downhill
+GPX_FILE        <- "Trans Balkan Race 2026 __ Issue 1.GPX"
+SLEEP_HOUR      <- 2      # target sleep time (02:00)
+SLEEP_DURATION  <- 4.5    # minimum sleep hours; wake target = SLEEP_HOUR + SLEEP_DURATION = 06:30
+MAX_SLEEP       <- 6      # maximum sleep hours; earliest valid stop = 06:30 − 6h = 00:30
+MIN_RIDING_H    <- 10     # minimum riding hours per day (safety net against bridge days)
+MAX_DAILY_CLIMB <- 4000   # m elevation gain/day (soft: enforced only after earliest stop = 00:30)
+BASE_SPEED      <- 13.8   # km/h on flat terrain
+MAX_DESCENT     <- 32     # km/h cap on descents
+UPHILL_K        <- 0.08   # exponential penalty per % grade uphill
+DOWNHILL_K      <- 0.04   # exponential gain per % grade downhill
 
 race_start <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Paris")
 
-# ── Parse GPX ────────────────────────────────────────────────────────────────
+# ── Parse GPX ─────────────────────────────────────────────────────────────────
 
 gpx  <- read_xml(GPX_FILE)
 ns   <- c(g = "http://www.topografix.com/GPX/1/1")
@@ -48,9 +52,8 @@ track <- tibble(
 haversine <- function(lat1, lon1, lat2, lon2) {
   r    <- 6371
   phi1 <- lat1 * pi / 180; phi2 <- lat2 * pi / 180
-  dphi <- (lat2 - lat1) * pi / 180
-  dlam <- (lon2 - lon1) * pi / 180
-  a    <- sin(dphi/2)^2 + cos(phi1)*cos(phi2)*sin(dlam/2)^2
+  a    <- sin(((lat2-lat1)*pi/180)/2)^2 +
+          cos(phi1)*cos(phi2)*sin(((lon2-lon1)*pi/180)/2)^2
   2 * r * asin(sqrt(a))
 }
 
@@ -58,7 +61,7 @@ segments <- track |>
   mutate(
     dist_km  = haversine(lag(lat), lag(lon), lat, lon),
     ele_diff = ele - lag(ele),
-    grade    = pmax(pmin(ifelse(dist_km > 0, (ele_diff / (dist_km*1000))*100, 0), 30), -30)
+    grade    = pmax(pmin(ifelse(dist_km > 0, (ele_diff/(dist_km*1000))*100, 0), 30), -30)
   ) |>
   slice(-1) |>
   filter(!is.na(dist_km), dist_km > 0) |>
@@ -68,29 +71,89 @@ segments <- track |>
       grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)
     ),
     time_h   = dist_km / speed_kmh,
+    gain_m   = pmax(ele_diff, 0),
     cum_dist = cumsum(dist_km),
-    cum_time = cumsum(time_h)
+    cum_time = cumsum(time_h),
+    cum_gain = cumsum(gain_m)
   )
 
 total_dist  <- sum(segments$dist_km)
-total_climb <- sum(pmax(segments$ele_diff, 0), na.rm = TRUE)
+total_climb <- sum(segments$gain_m)
 total_time  <- sum(segments$time_h)
-total_days  <- total_time / RIDING_HOURS
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ── Day simulation ─────────────────────────────────────────────────────────────
+# Elevation cap is SOFT: only enforced after earliest valid stop (00:30).
+# This eliminates short bridge days and keeps daily distances equal.
+
+simulate_days <- function(segs, start_wall) {
+  WAKE_HOUR <- SLEEP_HOUR + SLEEP_DURATION   # 6.5 = 06:30
+  days_list <- list()
+  seg_idx   <- 1L
+  wall_time <- start_wall
+
+  while (seg_idx <= nrow(segs)) {
+    day_h0          <- as.numeric(difftime(wall_time, floor_date(wall_time, "day"), units = "hours"))
+    hrs_to_latest   <- (SLEEP_HOUR            - day_h0 + 24) %% 24
+    hrs_to_earliest <- (WAKE_HOUR - MAX_SLEEP - day_h0 + 24) %% 24
+    if (hrs_to_latest   == 0) hrs_to_latest   <- 24
+    if (hrs_to_earliest == 0) hrs_to_earliest <- 24
+
+    day_riding <- 0; day_climb <- 0; day_dist <- 0; day_start <- wall_time
+
+    while (seg_idx <= nrow(segs)) {
+      s <- segs[seg_idx, ]
+      if (day_riding + s$time_h > hrs_to_latest) break
+      if (day_climb  + s$gain_m > MAX_DAILY_CLIMB &&
+          day_riding >= MIN_RIDING_H              &&
+          day_riding >= hrs_to_earliest) break
+      day_riding <- day_riding + s$time_h
+      day_dist   <- day_dist   + s$dist_km
+      day_climb  <- day_climb  + s$gain_m
+      seg_idx    <- seg_idx + 1L
+    }
+
+    stop_wall <- day_start + as.difftime(day_riding, units = "hours")
+    next_0630 <- floor_date(stop_wall, "day") + as.difftime(WAKE_HOUR, units = "hours")
+    if (next_0630 <= stop_wall) next_0630 <- next_0630 + days(1)
+    sleep_h   <- max(SLEEP_DURATION, min(MAX_SLEEP,
+                   as.numeric(difftime(next_0630, stop_wall, units = "hours"))))
+
+    days_list[[length(days_list) + 1]] <- list(
+      day_start_wall = day_start,
+      day_end_wall   = stop_wall,
+      riding_h       = day_riding,
+      dist_km        = day_dist,
+      climb_m        = day_climb,
+      sleep_h        = sleep_h
+    )
+    wall_time <- stop_wall + as.difftime(sleep_h, units = "hours")
+    if (seg_idx > nrow(segs)) break
+  }
+
+  bind_rows(lapply(days_list, as_tibble)) |>
+    mutate(day = row_number(), cum_dist = cumsum(dist_km), cum_riding = cumsum(riding_h))
+}
+
+day_info <- simulate_days(segments, race_start)
+
+total_days  <- nrow(day_info) - 1 +
+  (total_time - day_info$cum_riding[nrow(day_info) - 1]) / day_info$riding_h[nrow(day_info)]
+finish_wall <- day_info$day_start_wall[nrow(day_info)] +
+  as.difftime(total_time - c(0, day_info$cum_riding)[nrow(day_info)], units = "hours")
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
 
 riding_time_at_dist <- function(dist_km) {
   approx(segments$cum_dist, segments$cum_time, xout = dist_km, rule = 2)$y
 }
 
 wall_clock <- function(riding_time_h) {
-  day_num  <- pmax(ceiling(riding_time_h / RIDING_HOURS), 1)
-  hours_in <- riding_time_h - (day_num - 1) * RIDING_HOURS
-  race_start + days(day_num - 1) +
-    hours(floor(hours_in)) + minutes(round((hours_in %% 1) * 60))
+  day_idx   <- pmin(findInterval(riding_time_h, day_info$cum_riding) + 1L, nrow(day_info))
+  cum_start <- c(0, day_info$cum_riding)[day_idx]
+  day_info$day_start_wall[day_idx] + as.difftime(riding_time_h - cum_start, units = "hours")
 }
 
-# ── Daily breakdown ───────────────────────────────────────────────────────────
+# ── Checkpoints ────────────────────────────────────────────────────────────────
 
 checkpoints <- tribble(
   ~name,             ~cum_dist_km,
@@ -99,25 +162,35 @@ checkpoints <- tribble(
   "Finish Risan",          1395
 )
 
-find_position <- function(time_limit) {
-  i   <- max(which(segments$cum_time <= time_limit))
-  rem <- time_limit - segments$cum_time[i]
-  list(
-    cum_dist = segments$cum_dist[i] + rem * segments$speed_kmh[min(i+1, nrow(segments))],
-    cum_time = time_limit
-  )
-}
+# ── Daily table data ───────────────────────────────────────────────────────────
 
-daily <- tibble(day = 1:ceiling(total_days), time_limit = day * RIDING_HOURS) |>
+daily_tbl <- day_info |>
+  rowwise() |>
   mutate(
-    pos      = map(time_limit, find_position),
-    cum_dist = map_dbl(pos, "cum_dist"),
-    date     = race_start + days(day - 1)
+    start_dist = if (day == 1) 0 else day_info$cum_dist[day - 1],
+    cps = paste(
+      checkpoints$name[checkpoints$cum_dist_km > start_dist &
+                       checkpoints$cum_dist_km <= cum_dist],
+      collapse = ", "
+    )
   ) |>
-  select(-pos) |>
-  mutate(day_dist = cum_dist - lag(cum_dist, default = 0))
+  ungroup() |>
+  mutate(
+    date_window  = sprintf("%s %s–%s",
+                           format(day_start_wall, "%a %d %b"),
+                           format(day_start_wall, "%H:%M"),
+                           format(day_end_wall,   "%H:%M")),
+    cum_dist_fmt = if_else(cum_dist >= total_dist,
+                           sprintf("%.0f ✓", total_dist),
+                           sprintf("%.0f",   cum_dist))
+  )
 
-# ── Resupply table ────────────────────────────────────────────────────────────
+# Truncate at finish row (simulation naturally stops at last segment)
+finish_row <- which(daily_tbl$cum_dist >= total_dist - 0.01)[1]
+if (is.na(finish_row)) finish_row <- nrow(daily_tbl)
+daily_tbl  <- daily_tbl[1:finish_row, ]
+
+# ── Resupply table data ────────────────────────────────────────────────────────
 
 resupply <- tribble(
   ~location,              ~km,   ~type,         ~on_route,
@@ -151,7 +224,7 @@ resupply <- tribble(
 ) |>
   mutate(
     riding_h = map_dbl(km, riding_time_at_dist),
-    day_num  = pmax(ceiling(riding_h / RIDING_HOURS), 1),
+    day_num  = findInterval(riding_h, day_info$cum_riding) + 1L,
     arrival  = do.call(c, map(riding_h, wall_clock)),
     gap_km   = km - lag(km, default = 0)
   )
@@ -162,28 +235,34 @@ resupply <- tribble(
 ```{r stats}
 tibble(
   Metric = c("Total distance", "Total climb", "Total descent",
-             "Effective riding time", "Days at 16 h/day"),
+             "Effective riding time", "Max daily climb",
+             "Days", "Estimated finish"),
   Value  = c(
     sprintf("%.0f km",  total_dist),
     sprintf("%.0f m",   total_climb),
     sprintf("%.0f m",   sum(pmax(-segments$ele_diff, 0), na.rm = TRUE)),
     sprintf("%.1f h",   total_time),
-    sprintf("%.1f",     total_days)
+    sprintf("%.0f m",   MAX_DAILY_CLIMB),
+    sprintf("%.1f",     total_days),
+    format(finish_wall, "%a %d %b %Y %H:%M CEST")
   )
 ) |> kable(col.names = c("", ""))
 ```
 
 **Start:** Trieste, Italy — Fri 29 May 2026, 09:00 CEST
 **Finish:** Risan, Kotor Bay, Montenegro
-**Model:** flat speed `r BASE_SPEED` km/h · uphill penalty `exp(−{r UPHILL_K} × grade%)` · descent capped at `r MAX_DESCENT` km/h
+**Sleep:** 02:00 · `r SLEEP_DURATION`–`r MAX_SLEEP` h · wake 06:30
+**Elevation cap:** `r MAX_DAILY_CLIMB` m gain/day, soft — only enforced after 00:30 (prevents bridge days)
+**Speed model:** flat `r BASE_SPEED` km/h · uphill exp(−`r UPHILL_K` × grade%) · descent capped `r MAX_DESCENT` km/h
 
 ## Elevation profile
 
 ```{r elevation-profile, fig.height=4}
 elev_profile <- segments |>
-  mutate(day = factor(pmin(ceiling(cum_time / RIDING_HOURS), ceiling(total_days))))
+  select(cum_dist, ele, cum_time) |>
+  mutate(day = factor(pmin(findInterval(cum_time, day_info$cum_riding) + 1L, nrow(day_info))))
 
-day_lines <- daily |>
+day_lines <- day_info |>
   filter(cum_dist < total_dist) |>
   mutate(label = sprintf("Day %d\n%.0f km", day + 1, cum_dist))
 
@@ -191,7 +270,8 @@ ggplot(elev_profile, aes(cum_dist, ele)) +
   geom_area(aes(fill = day), alpha = 0.55) +
   geom_vline(data = day_lines, aes(xintercept = cum_dist),
              linetype = "dashed", colour = "grey40", linewidth = 0.35) +
-  geom_text(data = day_lines, aes(x = cum_dist, y = max(elev_profile$ele) * 0.95, label = label),
+  geom_text(data = day_lines,
+            aes(x = cum_dist, y = max(elev_profile$ele) * 0.95, label = label),
             size = 2.8, hjust = 1.08, colour = "grey30") +
   geom_vline(data = checkpoints, aes(xintercept = cum_dist_km),
              linetype = "dotted", colour = "firebrick", linewidth = 0.5) +
@@ -207,41 +287,31 @@ ggplot(elev_profile, aes(cum_dist, ele)) +
 ## Daily plan
 
 ```{r daily-table}
-daily_tbl <- daily |>
-  mutate(
-    day_dist_fmt = sprintf("%.0f km", day_dist),
-    cum_dist_fmt = sprintf("%.0f km", pmin(cum_dist, total_dist)),
-    date_fmt     = format(date, "%a %d %b")
-  )
-
-# Add checkpoints column
-daily_tbl <- daily_tbl |>
-  rowwise() |>
-  mutate(
-    start_dist = if (day == 1) 0 else daily$cum_dist[day - 1],
-    cps = paste(
-      checkpoints$name[checkpoints$cum_dist_km > start_dist &
-                       checkpoints$cum_dist_km <= cum_dist],
-      collapse = ", "
-    )
-  ) |>
-  ungroup()
-
-# Truncate at finish
-finish_row <- which(daily_tbl$cum_dist >= total_dist)[1]
-daily_tbl  <- daily_tbl[1:finish_row, ]
-daily_tbl$cum_dist_fmt[finish_row] <- sprintf("%.0f km ✓", total_dist)
-
 daily_tbl |>
-  select(Day = day, Date = date_fmt,
-         `km/day` = day_dist_fmt, `Cum. km` = cum_dist_fmt,
-         Checkpoints = cps) |>
-  kable(align = c("c","l","r","r","l"))
+  select(
+    Day             = day,
+    `Date / window` = date_window,
+    `Ride h`        = riding_h,
+    `Sleep h`       = sleep_h,
+    `km`            = dist_km,
+    `Climb m`       = climb_m,
+    `Cum. km`       = cum_dist_fmt,
+    Checkpoints     = cps
+  ) |>
+  mutate(
+    `Ride h`  = sprintf("%.1f", `Ride h`),
+    `Sleep h` = sprintf("%.1f", `Sleep h`),
+    `km`      = sprintf("%.0f", `km`),
+    `Climb m` = sprintf("%.0f", `Climb m`)
+  ) |>
+  kable(align = c("c","l","r","r","r","r","r","l"))
 ```
 
 ## Resupply schedule
 
-Arrival times assume continuous riding of `r RIDING_HOURS` h/day starting at 09:00, with 8 h rest at the end of each riding day. Times marked \* are off-route stops.
+Days end at 02:00 or when `r MAX_DAILY_CLIMB` m of gain is reached — but the cap is only enforced after 00:30 (earliest valid stop), so no short bridge days occur.
+Sleep `r SLEEP_DURATION`–`r MAX_SLEEP` h, all days resume at 06:30.
+Times marked \* are off-route stops.
 
 ```{r resupply-table}
 resupply |>
@@ -252,13 +322,14 @@ resupply |>
     km          = sprintf("%.0f", km)
   ) |>
   select(
-    Location = location,
-    `km` = km,
-    `+km` = gap_km,
-    Type = type,
+    Location             = location,
+    `km`                 = km,
+    `+km`                = gap_km,
+    Type                 = type,
+    Day                  = day_num,
     `Est. arrival (CEST)` = arrival_fmt
   ) |>
-  kable(align = c("l","r","r","l","l")) |>
+  kable(align = c("l","r","r","l","c","l")) |>
   kableExtra::kable_styling(full_width = FALSE) |>
   kableExtra::row_spec(
     which(resupply$type == "Checkpoint"),
@@ -301,5 +372,5 @@ tibble(grade = seq(-20, 20, 0.1)) |>
   theme_minimal(base_size = 11)
 ```
 
-GPS elevation noise is suppressed with a rolling median (window = 31 points ≈ 300 m).
-Gradient is capped at ±30% before speed calculation.
+GPS elevation noise suppressed with rolling median (window = 31 points ≈ 300 m).
+Gradient capped at ±30% before speed calculation.
