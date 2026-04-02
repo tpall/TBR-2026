@@ -318,6 +318,8 @@ resupply |>
   mutate(
     arrival_fmt = format(arrival, "%a %d %b %H:%M"),
     location    = if_else(!on_route, paste0(location, " *"), location),
+    gap_h       = riding_h - lag(riding_h, default = 0),
+    gap_h_fmt   = sprintf("%.1f", gap_h),
     gap_km      = sprintf("%.0f", gap_km),
     km          = sprintf("%.0f", km)
   ) |>
@@ -325,11 +327,12 @@ resupply |>
     Location             = location,
     `km`                 = km,
     `+km`                = gap_km,
+    `+h`                 = gap_h_fmt,
     Type                 = type,
     Day                  = day_num,
     `Est. arrival (CEST)` = arrival_fmt
   ) |>
-  kable(align = c("l","r","r","l","c","l")) |>
+  kable(align = c("l","r","r","r","l","c","l")) |>
   kableExtra::kable_styling(full_width = FALSE) |>
   kableExtra::row_spec(
     which(resupply$type == "Checkpoint"),

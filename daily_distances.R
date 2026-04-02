@@ -241,7 +241,8 @@ resupply <- tribble(
     riding_h = map_dbl(km, riding_time_at_dist),
     day_num  = findInterval(riding_h, day_info$cum_riding) + 1L,
     arrival  = do.call(c, map(riding_h, wall_clock)),
-    gap_km   = km - lag(km, default = 0)
+    gap_km   = km - lag(km, default = 0),
+    gap_h    = riding_h - lag(riding_h, default = 0)
   )
 
 cat(sprintf("\nResupply schedule (sleep %02.0f:00 · %.1f h · wake %02.0f:%02.0f · max %.0f m/day)\n",
@@ -249,15 +250,15 @@ cat(sprintf("\nResupply schedule (sleep %02.0f:00 · %.1f h · wake %02.0f:%02.0
             floor(SLEEP_HOUR + SLEEP_DURATION),
             round(((SLEEP_HOUR + SLEEP_DURATION) %% 1) * 60),
             MAX_DAILY_CLIMB))
-cat(sprintf("%-25s  %6s  %5s  %-14s  %-5s  %s\n",
-            "Location", "km", "+km", "Type", "Day", "Est. arrival (CEST)"))
-cat(strrep("─", 76), "\n")
+cat(sprintf("%-25s  %6s  %5s  %5s  %-14s  %-5s  %s\n",
+            "Location", "km", "+km", "+h", "Type", "Day", "Est. arrival (CEST)"))
+cat(strrep("─", 85), "\n")
 
 for (i in seq_len(nrow(resupply))) {
   r   <- resupply[i, ]
   off <- if (!r$on_route) " *" else "  "
-  cat(sprintf("%-25s  %6.0f  %5.0f  %-14s  Day%-2d  %s%s\n",
-              r$location, r$km, r$gap_km, r$type, r$day_num,
+  cat(sprintf("%-25s  %6.0f  %5.0f  %5.1f  %-14s  Day%-2d  %s%s\n",
+              r$location, r$km, r$gap_km, r$gap_h, r$type, r$day_num,
               format(r$arrival, "%a %d %b %H:%M"), off))
 }
 
