@@ -1,0 +1,740 @@
+---
+title: "TBR 2026 — Race Strategy"
+date: "2026-04-03"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    embed-resources: true
+    fig-width: 12
+    fig-height: 4.5
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(xml2)
+library(knitr)
+library(kableExtra)
+
+# ── Parameters (must match daily_distances.R) ────────────────────────────────
+GPX_FILE        <- "Trans Balkan Race 2026 __ Issue 1.GPX"
+SLEEP_HOUR      <- 2
+SLEEP_DURATION  <- 4.5
+MAX_SLEEP       <- 6
+MIN_RIDING_H    <- 10
+MAX_DAILY_CLIMB <- 4000
+BASE_SPEED      <- 13.8
+MAX_DESCENT     <- 32
+UPHILL_K        <- 0.08
+DOWNHILL_K      <- 0.04
+FTP             <- 237  # watts
+
+race_start <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Paris")
+
+# ── Parse GPX & build segments ───────────────────────────────────────────────
+gpx  <- read_xml(GPX_FILE); ns <- c(g = "http://www.topografix.com/GPX/1/1")
+pts  <- xml_find_all(gpx, ".//g:trkpt", ns)
+track <- tibble(
+  lat = as.numeric(xml_attr(pts, "lat")),
+  lon = as.numeric(xml_attr(pts, "lon")),
+  ele = as.numeric(xml_text(xml_find_first(pts, "g:ele", ns)))
+) |>
+  mutate(ele = zoo::rollmedian(ele, k = 31, fill = NA, align = "center")) |>
+  filter(!is.na(ele))
+
+haversine <- function(lat1, lon1, lat2, lon2) {
+  r <- 6371; phi1 <- lat1*pi/180; phi2 <- lat2*pi/180
+  a <- sin(((lat2-lat1)*pi/180)/2)^2 + cos(phi1)*cos(phi2)*sin(((lon2-lon1)*pi/180)/2)^2
+  2 * r * asin(sqrt(a))
+}
+
+segments <- track |>
+  mutate(dist_km = haversine(lag(lat), lag(lon), lat, lon),
+         ele_diff = ele - lag(ele),
+         grade = pmax(pmin(ifelse(dist_km > 0, (ele_diff/(dist_km*1000))*100, 0), 30), -30)) |>
+  slice(-1) |> filter(!is.na(dist_km), dist_km > 0) |>
+  mutate(
+    speed_kmh = case_when(
+      grade >= 0 ~ BASE_SPEED * exp(-UPHILL_K * grade),
+      grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)),
+    time_h = dist_km / speed_kmh, gain_m = pmax(ele_diff, 0),
+    cum_dist = cumsum(dist_km), cum_time = cumsum(time_h), cum_gain = cumsum(gain_m))
+
+total_dist  <- sum(segments$dist_km)
+total_climb <- sum(segments$gain_m)
+total_time  <- sum(segments$time_h)
+
+# ── Day simulation ───────────────────────────────────────────────────────────
+simulate_days <- function(segs, start_wall) {
+  WAKE_HOUR <- SLEEP_HOUR + SLEEP_DURATION
+  days_list <- list(); seg_idx <- 1L; wall_time <- start_wall
+  while (seg_idx <= nrow(segs)) {
+    day_h0 <- as.numeric(difftime(wall_time, floor_date(wall_time, "day"), units = "hours"))
+    hrs_to_latest <- (SLEEP_HOUR - day_h0 + 24) %% 24
+    hrs_to_earliest <- (WAKE_HOUR - MAX_SLEEP - day_h0 + 24) %% 24
+    if (hrs_to_latest == 0) hrs_to_latest <- 24
+    if (hrs_to_earliest == 0) hrs_to_earliest <- 24
+    day_riding <- 0; day_climb <- 0; day_dist <- 0; day_start <- wall_time
+    while (seg_idx <= nrow(segs)) {
+      s <- segs[seg_idx, ]
+      if (day_riding + s$time_h > hrs_to_latest) break
+      if (day_climb + s$gain_m > MAX_DAILY_CLIMB &&
+          day_riding >= MIN_RIDING_H && day_riding >= hrs_to_earliest) break
+      day_riding <- day_riding + s$time_h; day_dist <- day_dist + s$dist_km
+      day_climb <- day_climb + s$gain_m; seg_idx <- seg_idx + 1L
+    }
+    stop_wall <- day_start + as.difftime(day_riding, units = "hours")
+    next_0630 <- floor_date(stop_wall, "day") + as.difftime(WAKE_HOUR, units = "hours")
+    if (next_0630 <= stop_wall) next_0630 <- next_0630 + days(1)
+    sleep_h <- max(SLEEP_DURATION, min(MAX_SLEEP,
+                 as.numeric(difftime(next_0630, stop_wall, units = "hours"))))
+    days_list[[length(days_list) + 1]] <- list(
+      day_start_wall = day_start, day_end_wall = stop_wall,
+      riding_h = day_riding, dist_km = day_dist, climb_m = day_climb, sleep_h = sleep_h)
+    wall_time <- stop_wall + as.difftime(sleep_h, units = "hours")
+    if (seg_idx > nrow(segs)) break
+  }
+  bind_rows(lapply(days_list, as_tibble)) |>
+    mutate(day = row_number(), cum_dist = cumsum(dist_km), cum_riding = cumsum(riding_h))
+}
+
+day_info <- simulate_days(segments, race_start)
+finish_wall <- day_info$day_start_wall[nrow(day_info)] +
+  as.difftime(total_time - c(0, day_info$cum_riding)[nrow(day_info)], units = "hours")
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+riding_time_at_dist <- function(dist_km)
+  approx(segments$cum_dist, segments$cum_time, xout = dist_km, rule = 2)$y
+
+wall_clock <- function(riding_time_h) {
+  day_idx <- pmin(findInterval(riding_time_h, day_info$cum_riding) + 1L, nrow(day_info))
+  cum_start <- c(0, day_info$cum_riding)[day_idx]
+  day_info$day_start_wall[day_idx] + as.difftime(riding_time_h - cum_start, units = "hours")
+}
+
+# ── Checkpoints & resupply ───────────────────────────────────────────────────
+checkpoints <- tribble(
+  ~name,           ~cum_dist_km, ~cutoff,
+  "CP1 Mazin",            451,   as.POSIXct("2026-06-01 17:00:00", tz = "Europe/Paris"),
+  "CP2 Kopilovi",        1060,   as.POSIXct("2026-06-04 23:59:00", tz = "Europe/Paris"),
+  "Finish Risan",        1395,   as.POSIXct("2026-06-07 23:59:00", tz = "Europe/Paris")
+) |>
+  mutate(
+    riding_h = map_dbl(cum_dist_km, riding_time_at_dist),
+    est_arrival = do.call(c, map(riding_h, wall_clock)),
+    margin_h = as.numeric(difftime(cutoff, est_arrival, units = "hours"))
+  )
+
+resupply <- tribble(
+  ~location,              ~km,   ~type,         ~on_route,
+  "Kozina (SLO)",         16.6,  "Village",      TRUE,
+  "Slavnik (SLO)",        28.2,  "Mountain hut", TRUE,
+  "Dane (CRO)",           47.4,  "Fountain",     TRUE,
+  "Sveti Pavel (SLO)",    74.2,  "Fountain",     TRUE,
+  "Platak (CRO)",        141,    "Mountain hut", TRUE,
+  "Fužine (CRO)",        164,    "Village",      TRUE,
+  "Oltari (CRO)",        245,    "Fountain",     TRUE,
+  "Dom Zavižan (CRO)",   260,    "Mountain hut", TRUE,
+  "Gospić (CRO)",        345,    "City",         TRUE,
+  "CP1 Mazin (CRO)",     451,    "Checkpoint",   TRUE,
+  "Velika Popina (CRO)", 490,    "Fountain",     TRUE,
+  "Knin (CRO)",          537,    "City",         TRUE,
+  "Livno (BiH)",         664,    "Village",      TRUE,
+  "Šuica (BiH)",         701,    "Village",      TRUE,
+  "Mostar (BiH)",        812,    "City",         TRUE,
+  "Nevesinje (BiH)",     858,    "Village",      FALSE,
+  "Ulog (BiH)",          897,    "Village",      TRUE,
+  "Fountain (BiH)",      938,    "Fountain",     TRUE,
+  "Miljevina (BiH)",     990,    "Village",      FALSE,
+  "Popov Most (BiH)",   1034,    "Village",      TRUE,
+  "Brod (BiH)",         1055,    "Village",      TRUE,
+  "CP2 Kopilovi (BiH)", 1060,    "Checkpoint",   TRUE,
+  "Žabljak (MNE)",      1160,    "City",         TRUE,
+  "Njegovuđa (MNE)",    1170,    "Village",      TRUE,
+  "Kolašin (MNE)",      1228,    "City",         FALSE,
+  "Nikšić (MNE)",       1325,    "City",         TRUE,
+  "Risan / Finish",     1395,    "Finish",       TRUE
+) |>
+  mutate(
+    riding_h = map_dbl(km, riding_time_at_dist),
+    day_num  = findInterval(riding_h, day_info$cum_riding) + 1L,
+    arrival  = do.call(c, map(riding_h, wall_clock)),
+    gap_km   = km - lag(km, default = 0),
+    gap_h    = riding_h - lag(riding_h, default = 0)
+  )
+```
+
+## The numbers
+
+```{r overview-table}
+tibble(
+  ` ` = c("Distance", "Climbing", "Riding time (model)", "Sleep schedule",
+          "Estimated finish", "Target", "FTP"),
+  `  ` = c(
+    sprintf("%.0f km", total_dist),
+    sprintf("%.0f m", total_climb),
+    sprintf("%.1f h", total_time),
+    "02:00-06:30 (4.5h min, 6h max)",
+    format(finish_wall, "%a %d %b %H:%M CEST"),
+    "< 9 days (finish by Sat 6 Jun)",
+    sprintf("%d W", FTP)
+  )
+) |> kable(col.names = NULL)
+```
+
+::: {.callout-important}
+## Model vs reality
+The simulation assumes 100% riding efficiency (no stops). Your Hydra Epic data shows **65-72% efficiency** on multi-day stages (stops for eating, navigation, mechanicals, bathroom). A 19.5h riding window realistically yields **13-14h of pedaling**. The model's 7-day finish is optimistic; **7.5-8.5 days** is the realistic target at your pace.
+:::
+
+## Checkpoint timeline
+
+```{r checkpoint-table}
+checkpoints |>
+  mutate(
+    `Est. arrival` = format(est_arrival, "%a %d %b %H:%M"),
+    Cutoff = format(cutoff, "%a %d %b %H:%M"),
+    `Margin` = sprintf("%.0fh", margin_h)
+  ) |>
+  select(Checkpoint = name, km = cum_dist_km, `Est. arrival`, Cutoff, Margin) |>
+  kable() |>
+  kable_styling(full_width = FALSE)
+```
+
+::: {.callout-note}
+Even with realistic efficiency losses, margins are comfortable. CP1 has **30+ hours** of buffer. The biggest risk is not cutoffs but accumulated fatigue on Days 5-7.
+:::
+
+## Day-by-day strategy
+
+```{r day-data}
+# Build detailed day data
+day_detail <- day_info |>
+  mutate(
+    start_dist = lag(cum_dist, default = 0),
+    date_str = format(day_start_wall, "%a %d %b"),
+    window = sprintf("%s–%s", format(day_start_wall, "%H:%M"), format(day_end_wall, "%H:%M")),
+    # Get elevation stats per day
+    max_elev = map2_dbl(start_dist, cum_dist, ~max(segments$ele[segments$cum_dist > .x & segments$cum_dist <= .y], na.rm = TRUE)),
+    min_elev = map2_dbl(start_dist, cum_dist, ~min(segments$ele[segments$cum_dist > .x & segments$cum_dist <= .y], na.rm = TRUE))
+  )
+```
+
+### Day 1 — Friday 29 May: Trieste to ~km 179
+
+**Slovenia and Croatian coast → mountains**
+
+```{r day1-stats}
+d <- day_detail[1,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~11h (first day conservative)",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            "First 50km: 1530m climb. Steep coastal mountains.")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- **Resist the start adrenaline.** Day 1 sets the tone for 8 more days. You know this from Hydra E1.
+- The opening 50 km is brutal: **1530m of climbing** at 5.9% average grade. This is the Slovenian karst. Don't try to keep up with anyone.
+- **Power cap: 130-140W average** (55-59% FTP). HR stays under 135.
+- At Hydra E1 you averaged 132W and HR 118 over 25.4h — that's the benchmark.
+- **Nutrition from the first hour**: 60-80g carbs/hr. Don't wait until hungry.
+- First resupply: Kozina (km 17), Slavnik mountain hut (km 28). Stock up in Fužine (km 164, village with shops).
+- **Sleep target: Stop by 00:30**, sleep until 06:30 (6h sleep on night 1 is worth it).
+
+::: {.callout-warning}
+## Critical gap: Sveti Pavel → Platak (67 km, 1533m climb, 5.8h)
+No resupply for 67 km through mountain terrain. Carry food and water from Sveti Pavel (km 74).
+:::
+
+### Day 2 — Saturday 30 May: ~km 179 to ~km 409
+
+**Croatian highlands — Velebit mountains**
+
+```{r day2-stats}
+d <- day_detail[2,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~14h",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            "Velebit range. Steep grades (avg 9.2% on climbs). Gravel/forest roads.")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- Wake 06:30. Coffee, eat 500 kcal breakfast. Rolling by 07:00.
+- This is the **steepest average climbing day** (9.2% on uphills). Seated climbing, low cadence, Z2-Z3.
+- **Power target: 120-130W average**. You'll push 160-200W on climbs but average will drop on rough terrain.
+- Key resupply: Oltari (km 245), Dom Zavižan mountain hut (km 260), Gospić (km 345, city — **big resupply**).
+- The Velebit section (km 200-300) is remote: **1200m+ climbing per 50km**, poor surfaces.
+
+::: {.callout-warning}
+## Critical gap: Fužine → Oltari (81 km, 1667m climb, 7.2h)
+Remote mountain section. Carry 3000+ kcal and 2+ liters.
+:::
+
+### Day 3 — Sunday 31 May: ~km 409 to ~km 646
+
+**Lika plateau → Dalmatian hinterland**
+
+```{r day3-stats}
+d <- day_detail[3,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "CP arrival", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~14h",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            sprintf("CP1 Mazin (~km 451) around %s", format(checkpoints$est_arrival[1], "%H:%M")),
+            "Mix of gravel and paved. Enters Bosnia late in day.")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- **CP1 Mazin at ~km 451** — early in the day. Cutoff is Mon 1 Jun 17:00; you'll arrive **~30h ahead**.
+- After CP1: Gospić to Knin section. Resupply at Knin (km 537, city).
+- Fatigue is building. Stick to the routine: eat every 30 min, drink every 15 min.
+- **Power will naturally drop to 110-120W average** — this is normal. Don't chase Day 1 numbers.
+
+::: {.callout-warning}
+## Critical gap: Knin → Livno (127 km, 2058m climb, 10.5h)
+**The biggest gap on the entire route.** No resupply for 127 km through remote terrain. Load up fully in Knin: 5000+ kcal, 3+ liters. This gap spans from late Day 3 into Day 4.
+:::
+
+### Day 4 — Monday 1 June: ~km 646 to ~km 882
+
+**Central Bosnia — mountains and valleys**
+
+```{r day4-stats}
+d <- day_detail[4,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~14h",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            "Bosnian mountains. Gravel, some paved through towns. Mostar at km 812.")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- This is the **mental halfway point**. 4 days done, 4 to go. Expect a psychological dip.
+- Mostar (km 812) is the biggest city since Trieste — **major resupply opportunity**. Get a proper meal, fill everything.
+- Power target: 110-120W. Accept it. Hydra showed you drop 20% by mid-race.
+- **Watch for appetite crash** around Day 3-4. Force yourself to eat even if food sounds terrible. Switch to savory/salty foods if sweet becomes unbearable.
+
+::: {.callout-tip}
+## Mostar (km 812)
+Real city. Restaurants, shops, pharmacies. If you need bike parts, this is the place. Consider a 30-45min longer stop for a hot meal and mental reset.
+:::
+
+### Day 5 — Tuesday 2 June: ~km 882 to ~km 1091
+
+**Eastern Bosnia — the hard middle**
+
+```{r day5-stats}
+d <- day_detail[5,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~13h",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            "Remote mountain terrain. Hardest climbing section (km 900-950: 1349m/50km).")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- **4102m of climbing** — second hardest day. The section km 900-950 (after Ulog) is particularly steep.
+- Approaching CP2 Kopilovi (km 1060). Arrival estimated around evening.
+- **This is the day that breaks people.** Fatigue is maximal, terrain is hard, remoteness is real.
+- Keep the routine. Wake, eat, ride, eat, ride, eat, sleep. Nothing else matters.
+- Watch for the fountain at km 938 — it may be the only water for a long stretch.
+
+::: {.callout-warning}
+## Critical gap: Ulog → Fountain (41 km, 1116m climb, 3.9h)
+Followed by Fountain → Miljevina (52 km, 747m climb, 4.2h). Remote Bosnian mountains. Carry extra water.
+:::
+
+### Day 6 — Wednesday 3 June: ~km 1091 to ~km 1290
+
+**Montenegro mountains — the hardest day**
+
+```{r day6-stats}
+d <- day_detail[6,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Realistic riding", "Distance", "Climbing",
+             "Elevation range", "CP arrival", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h), "~13h",
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            sprintf("CP2 Kopilovi (~km 1060) early if not reached Day 5"),
+            "HARDEST DAY. 4619m climbing. Durmitor and Montenegro mountains. Avg 9.9% on climbs.")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- **4619m of climbing** — the biggest day. Max elevation 1880m. Average uphill grade **9.9%**.
+- Section km 1200-1250 is the steepest on the whole route: **1387m in 50km**.
+- CP2 Kopilovi if not reached on Day 5 — cutoff is Thu 4 Jun 23:59, you have huge margin.
+- **Think of Hydra E7-E8**: you rode 147km/1696m on Day 7 and 330km/3156m on Day 8. You've been deeper than this.
+- Žabljak (km 1160) is a proper city in Montenegro — resupply here.
+- Power: accept 100-115W average. Your Hydra E7-E8 power was 100-105W. This is normal.
+
+::: {.callout-warning}
+## Critical gap: CP2 Kopilovi → Žabljak (100 km, 2335m climb, 8.9h)
+And Kolašin → Nikšić (97 km, 1963m climb, 8.5h). Both are massive gaps in Montenegro mountains.
+:::
+
+### Day 7 — Thursday 4 June: ~km 1290 to Finish (km 1395)
+
+**The final 97 km — descent to Risan**
+
+```{r day7-stats}
+d <- day_detail[7,]
+tibble(
+  Metric = c("Window", "Riding (model)", "Distance", "Climbing",
+             "Elevation range", "Key terrain"),
+  Value = c(d$window, sprintf("%.1fh", d$riding_h),
+            sprintf("%.0f km", d$dist_km), sprintf("%.0f m", d$climb_m),
+            sprintf("%.0f–%.0f m", d$min_elev, d$max_elev),
+            "Only 715m climbing. Mostly descent from mountains to Kotor Bay (sea level).")
+) |> kable(col.names = NULL)
+```
+
+**Strategy:**
+
+- **The easy day.** Only 97 km and 715m of climbing. Mostly downhill to Kotor Bay.
+- Don't crash on the descents. Tired riders crash. **Brake before corners**, not in them.
+- Nikšić (km 1325) is the last city before the finish — last resupply if needed.
+- **Enjoy the final descent to Risan.** You've earned it.
+
+::: {.callout-tip}
+Model estimates arrival around **13:30 on Thu 4 June** — 6.2 days. With realistic efficiency, expect **finish Fri 5 Jun or Sat 6 Jun**, well within your 9-day target and days before the cutoff.
+:::
+
+## Power strategy
+
+```{r power-zones}
+tibble(
+  Context = c("Flat / tailwind", "Rolling terrain", "Climbing (< 6%)",
+              "Steep climbing (> 8%)", "Descending", "Race average target"),
+  `Power (W)` = c(
+    sprintf("130-165 (55-70%% FTP)", FTP),
+    sprintf("120-150", FTP),
+    sprintf("165-200 (70-84%% FTP)", FTP),
+    sprintf("140-180 (60-76%% FTP)", FTP),
+    "Soft pedal / coast",
+    "100-130"
+  ),
+  `HR cap` = c("<135", "<135", "<140", "<145", "N/A",
+               "<130"),
+  Notes = c(
+    "Sustainable all day, every day",
+    "Natural variation is fine",
+    "Don't surge — steady effort up",
+    "Sit and spin, don't stand unless necessary",
+    "Rest the legs, eat, drink",
+    "Your Hydra avg was 105-132W across 8 stages"
+  )
+) |> kable() |> kable_styling(full_width = FALSE)
+```
+
+### Power decay over multi-day
+
+Your Hydra Epic data shows a clear power decay pattern:
+
+```{r power-decay}
+# Hydra data from analysis
+hydra_stages <- tribble(
+  ~stage, ~day, ~km, ~hours, ~avg_watts, ~avg_hr,
+  "E1", 1, 429, 25.4, 132, 118,
+  "E2", 2, 202, 14.1, 109, 107,
+  "E3", 3, 183, 12.1, 115, 109,
+  "E4", 4, 199, 12.5,  80, 107,
+  "E5", 5, 205, 12.9, 114, 106,
+  "E6", 6, 155, 11.7,  98, 102,
+  "E7", 7, 147, 11.5, 100, 102,
+  "E8", 8, 330, 23.1, 105, 102
+)
+
+ggplot(hydra_stages, aes(day, avg_watts)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(colour = "steelblue", size = 3) +
+  geom_hline(yintercept = 132, linetype = "dashed", colour = "grey50") +
+  annotate("text", x = 1.5, y = 136, label = "Day 1: 132W", size = 3, colour = "grey40") +
+  geom_hline(yintercept = 105, linetype = "dashed", colour = "grey50") +
+  annotate("text", x = 7, y = 109, label = "Day 7-8: 100-105W", size = 3, colour = "grey40") +
+  scale_x_continuous(breaks = 1:8) +
+  labs(title = "Hydra Epic 2025 — Average Power by Stage",
+       subtitle = "Expect ~20% power drop from Day 1 to Day 7+",
+       x = "Race day", y = "Average power (W)") +
+  theme_minimal(base_size = 12)
+```
+
+**Implications for TBR:**
+
+- Day 1: ~125-130W avg → realistic
+- Days 2-3: ~115-120W avg → settling in
+- Days 4-5: ~110-115W avg → fatigue accumulating
+- Days 6-7: ~100-110W avg → deep fatigue, this is expected
+- **Don't fight the decay.** It's physiology. Maintain effort, accept lower power.
+
+## Nutrition plan
+
+### Hourly targets
+
+```{r nutrition-table}
+tibble(
+  Riding = c("Hours 1-4", "Hours 5-10", "Hours 10-14", "At stops"),
+  `Carbs/hr` = c("80g", "70-80g", "60-70g", "Eat a full meal if >15min stop"),
+  `Fluid/hr` = c("500-750ml", "500-750ml", "500ml", "Drink to thirst"),
+  `What to eat` = c(
+    "Gels, bars — whatever is convenient",
+    "Mix gels/bars with real food (sandwich, banana)",
+    "Savory foods, rice, bread — sweet becomes repulsive",
+    "Whatever hot food is available. Soup, pasta, pizza."
+  )
+) |> kable() |> kable_styling(full_width = FALSE)
+```
+
+### Daily nutrition targets
+
+| Metric | Target | Notes |
+|---|---|---|
+| Total kcal intake | 6000-8000 | You'll burn 8000-10000, but gut limits absorption |
+| Carbohydrates | 500-700g | Main fuel source |
+| Protein | 100-150g | From real food at resupply stops |
+| Sodium | 2000-3000mg | More in heat; salt tablets or electrolyte mix |
+| Caffeine | Reserve for nights | Cola at gas stations, caffeine gels after midnight |
+
+### Resupply strategy
+
+```{r resupply-critical}
+resupply |>
+  mutate(
+    arrival_fmt = format(arrival, "%a %d %b %H:%M"),
+    location = if_else(!on_route, paste0(location, " *"), location)
+  ) |>
+  select(Location = location, km, `+km` = gap_km, Type = type,
+         Day = day_num, `Est. arrival` = arrival_fmt) |>
+  mutate(km = sprintf("%.0f", km), `+km` = sprintf("%.0f", `+km`)) |>
+  kable(align = c("l","r","r","l","c","l")) |>
+  kable_styling(full_width = FALSE, font_size = 12) |>
+  row_spec(which(resupply$type == "Checkpoint"), bold = TRUE, background = "#fff3cd") |>
+  row_spec(nrow(resupply), bold = TRUE, background = "#d4edda") |>
+  row_spec(which(resupply$gap_km > 80), color = "red")
+```
+
+`*` = off-route
+
+### Critical resupply gaps (> 80 km)
+
+```{r critical-gaps}
+resupply |>
+  filter(gap_km > 60) |>
+  arrange(desc(gap_km)) |>
+  mutate(
+    section_climb = map2_dbl(km - gap_km, km, function(from, to) {
+      sum(segments$gain_m[segments$cum_dist > from & segments$cum_dist <= to])
+    })
+  ) |>
+  select(
+    `From → To` = location, `Gap km` = gap_km, `Climb` = section_climb,
+    `Riding hours` = gap_h, Day = day_num
+  ) |>
+  mutate(`Gap km` = sprintf("%.0f", `Gap km`),
+         Climb = sprintf("%.0fm", Climb),
+         `Riding hours` = sprintf("%.1fh", `Riding hours`)) |>
+  kable() |>
+  kable_styling(full_width = FALSE) |>
+  row_spec(1:3, bold = TRUE, color = "red")
+```
+
+::: {.callout-important}
+## The 3 biggest gaps
+1. **Knin → Livno (127 km)**: Fill everything in Knin. Carry 5000+ kcal, 3L water.
+2. **Šuica → Mostar (111 km)**: Stock up in Šuica.
+3. **Gospić → CP1 Mazin (106 km)**: Last big resupply in Gospić (city with shops).
+:::
+
+## Sleep strategy
+
+### Schedule
+
+| | Target | Notes |
+|---|---|---|
+| **Stop riding** | 00:30-02:00 | Hard stop. No riding after 02:00. |
+| **Sleep** | 02:00-06:30 (4.5h) | Minimum. Take 6h on Night 1 and after hardest days. |
+| **Wake** | 06:30 | Same time every day. Routine = survival. |
+| **Rolling** | By 07:00 | 30min for wake-up, eat, pack, bathroom |
+
+### Sleep execution
+
+1. **Scout bivvy spot 15-20 min before stopping.** Don't ride until 02:00 then spend 30min looking.
+2. Target: **15 min from stopping to sleeping.** Practice this before the race.
+3. Setup: bivvy bag/tent → sleeping bag → earplugs → eye mask → alarm set → sleep.
+4. **Don't skip sleep to make time.** Sleep deprivation costs more than it saves after Day 3.
+
+### Night riding
+
+- After Day 2, you'll be riding in darkness from ~21:00-00:30 every night.
+- **Lights**: Helmet + bar mount. Spare batteries. USB charging from dynamo or power bank.
+- **Navigation**: GPS visibility is critical at night. Mount at eye level.
+- **Drowsiness**: If you nod off on the bike, stop immediately. 15-20min "power nap" is better than crashing.
+
+## Efficiency analysis
+
+Your Hydra Epic efficiency data:
+
+```{r efficiency}
+hydra_eff <- tribble(
+  ~stage, ~moving_h, ~elapsed_h,
+  "E1", 25.4, 37.8,
+  "E2", 14.1, 20.3,
+  "E3", 12.1, 17.1,
+  "E4", 12.5, 17.4,
+  "E5", 12.9, 18.2,
+  "E6", 11.7, 18.1,
+  "E7", 11.5, 16.9,
+  "E8", 23.1, 37.1
+) |>
+  mutate(efficiency = moving_h / elapsed_h * 100,
+         stop_h = elapsed_h - moving_h)
+
+hydra_eff |>
+  select(Stage = stage, `Moving (h)` = moving_h, `Elapsed (h)` = elapsed_h,
+         `Stops (h)` = stop_h, `Efficiency (%)` = efficiency) |>
+  mutate(across(where(is.numeric), ~sprintf("%.1f", .))) |>
+  kable() |> kable_styling(full_width = FALSE)
+```
+
+**Key insight:** You spend **5-6 hours per day NOT riding** (eating, navigation, mechanicals, bathroom, transitions). For TBR planning:
+
+- **19.5h available window** (06:30-02:00) × 70% efficiency = **~13.5h actual riding**
+- At your speed model, that's **140-170 km/day** — right on target for sub-9-day finish
+- To improve: reduce stop time (eat on the bike, fast bivvy setup, less dithering at junctions)
+
+## Equipment checklist
+
+### Critical (race-ending if missing)
+
+| Category | Items |
+|---|---|
+| **Navigation** | GPS with full TBR route loaded, backup phone with offline maps, USB charger |
+| **Lights** | Helmet light + bar light, spare batteries, USB charging cable |
+| **Repair** | Spare tube ×2, patch kit, tire boot, multi-tool, chain quick link, tire lever |
+| **Sleep** | Bivvy bag or ultralight tent, sleeping bag/quilt (comfort 5-10°C), inflatable pillow |
+| **Safety** | Emergency bivvy (reflective), phone with local emergency numbers, ID + insurance card |
+
+### Important (race-impacting if missing)
+
+| Category | Items |
+|---|---|
+| **Clothing** | Rain jacket (waterproof), arm warmers, leg warmers, wind vest, spare chamois |
+| **Nutrition** | Frame bag for food, 2+ bottle cages, electrolyte mix, caffeine gels for night |
+| **Comfort** | Chamois cream, anti-chafing, lip balm with SPF, sunscreen |
+| **Electronics** | Power bank (10000+ mAh), charging cables, earplugs, eye mask |
+
+### Weather expectations (late May — early June, Balkans)
+
+| Elevation | Day temp | Night temp | Rain risk | Notes |
+|---|---|---|---|---|
+| < 500m | 20-30°C | 12-18°C | Moderate | Can be hot in valleys |
+| 500-1000m | 15-25°C | 8-14°C | Moderate | |
+| 1000-1500m | 10-20°C | 4-10°C | High | Mountain weather changes fast |
+| > 1500m | 5-15°C | 0-6°C | High | Possible frost above 1800m |
+
+## Mental strategy
+
+### The five phases of ultra-racing
+
+| Phase | When | What happens | What to do |
+|---|---|---|---|
+| **Euphoria** | Day 1 | Everything feels great, adrenaline high | Rein it in. You know the cost of going too hard on Day 1. |
+| **Settling** | Days 2-3 | Finding rhythm, body adjusting | Establish routine. Eat, ride, sleep on schedule. |
+| **The Pit** | Days 4-5 | Fatigue peaks, motivation drops, body hurts everywhere | **Keep riding.** This passes. Eat something warm. Call home. Small goals (next resupply). |
+| **Acceptance** | Days 6-7 | Pain becomes background noise, robot mode | Autopilot is OK. Just keep the routine going. |
+| **Finish smell** | Day 7+ | Energy returns, excitement builds | Don't take risks. No heroic descents. The finish is coming. |
+
+### Decision rules
+
+Pre-make these decisions so you don't have to think when exhausted:
+
+1. **"Should I keep riding?"** → If it's before 00:30: yes. If after 02:00: stop immediately.
+2. **"Should I eat?"** → Yes. Always yes. Even if not hungry.
+3. **"Should I skip sleep?"** → No. Never after Day 2.
+4. **"Should I push harder?"** → No. Not until Day 7 and the finish is within reach.
+5. **"Should I quit?"** → Sleep on it. Literally. If you still want to quit after sleeping, re-evaluate. Most "I want to quit" feelings pass with food + sleep.
+
+### Mantras
+
+- *"I've done this before."* (You have. Hydra was 8 days.)
+- *"Just ride to the next resupply."* (Never think about the finish. Think about the next 50 km.)
+- *"Eat. Drink. Pedal. Repeat."*
+
+## Hardest sections — know what's coming
+
+```{r hardest-sections}
+# Find 50km windows with most climbing
+windows <- tibble(start_km = seq(0, max(segments$cum_dist) - 50, by = 25)) |>
+  rowwise() |>
+  mutate(
+    end_km = start_km + 50,
+    climb = sum(segments$gain_m[segments$cum_dist > start_km & segments$cum_dist <= end_km]),
+    time_h = sum(segments$time_h[segments$cum_dist > start_km & segments$cum_dist <= end_km]),
+    avg_speed = 50 / time_h,
+    day = findInterval(riding_time_at_dist(start_km), day_info$cum_riding) + 1L
+  ) |>
+  ungroup() |>
+  filter(climb > 1100) |>
+  arrange(desc(climb))
+
+windows |>
+  head(10) |>
+  mutate(Section = sprintf("km %.0f–%.0f", start_km, end_km),
+         Climb = sprintf("%.0fm", climb),
+         `Avg speed` = sprintf("%.1f km/h", avg_speed),
+         `Time` = sprintf("%.1fh", time_h)) |>
+  select(Section, Climb, `Avg speed`, Time, Day = day) |>
+  kable() |> kable_styling(full_width = FALSE) |>
+  row_spec(1:3, bold = TRUE)
+```
+
+## Summary: the plan in one page
+
+::: {.callout-tip}
+## Race in 7 words
+**Start slow. Eat always. Sleep enough. Finish.**
+:::
+
+| Day | Date | Target km | Climbing | Key waypoints | Stop |
+|---|---|---|---|---|---|
+| 1 | Fri 29 May | ~179 | 4000m | Fužine (km 164) | 00:30, sleep 6h |
+| 2 | Sat 30 May | ~230 | 3800m | Gospić (km 345) | 02:00, sleep 4.5h |
+| 3 | Sun 31 May | ~237 | 3713m | **CP1 Mazin** (km 451), Knin (km 537) | 02:00, sleep 4.5h |
+| 4 | Mon 1 Jun | ~236 | 3539m | Livno (km 664), **Mostar** (km 812) | 02:00, sleep 4.5h |
+| 5 | Tue 2 Jun | ~209 | 4102m | CP2 approach, remote Bosnia | 00:30, sleep 6h |
+| 6 | Wed 3 Jun | ~200 | **4619m** | **CP2 Kopilovi**, Žabljak (km 1160) | 00:30, sleep 6h |
+| 7 | Thu 4 Jun | ~97 | 715m | Nikšić → **Risan FINISH** | **Done** |
+
+**Realistic finish: Friday 5 June or Saturday 6 June** — well within the 9-day target.
+
+<hr>
+*Generated `r Sys.Date()` using GPX route analysis, Strava training data (FTP `r FTP`W), and Hydra Epic 2025 race data.*
