@@ -30,23 +30,49 @@
       "yearsInSport": 12
     },
     "currentForm": {
-      "weeklyVolume": { "total": 10.8, "bike": 8.5, "strength": 1.5, "yoga": 0.2 },
-      "longestSessions": { "bike": 120, "virtualRide": 91 },
+      "weeklyVolume": {
+        "total": 10.8,
+        "bike": 8.5,
+        "strength": 1.5,
+        "yoga": 0.2
+      },
+      "longestSessions": {
+        "bike": 120,
+        "virtualRide": 91
+      },
       "consistency": 8
     },
     "strengths": [
-      { "sport": "bike", "evidence": "Elite ultra-endurance capacity: 428km single rides, 8-stage races, multi-day efforts" },
-      { "sport": "bike", "evidence": "Very strong aerobic base: avg ride HR 116-120 bpm at moderate power" },
-      { "sport": "strength", "evidence": "Consistent 2-3x/week weight training for durability" }
+      {
+        "sport": "bike",
+        "evidence": "Elite ultra-endurance capacity: 428km single rides, 8-stage races, multi-day efforts"
+      },
+      {
+        "sport": "bike",
+        "evidence": "Very strong aerobic base: avg ride HR 116-120 bpm at moderate power"
+      },
+      {
+        "sport": "strength",
+        "evidence": "Consistent 2-3x/week weight training for durability"
+      }
     ],
     "limiters": [
-      { "sport": "bike", "evidence": "Climbing deficit: training in flat Estonia, TBR demands 24,500m" },
-      { "sport": "bike", "evidence": "Current volume (~200km/week outdoor) well below peak capacity" },
-      { "sport": "bike", "evidence": "Limited recent multi-day back-to-back efforts" }
+      {
+        "sport": "bike",
+        "evidence": "Climbing deficit: training in flat Estonia, TBR demands 24,500m"
+      },
+      {
+        "sport": "bike",
+        "evidence": "Current volume (~200km/week outdoor) well below peak capacity"
+      },
+      {
+        "sport": "bike",
+        "evidence": "Limited recent multi-day back-to-back efforts"
+      }
     ],
     "constraints": [
-      "Flat terrain only (Estonia) — must simulate climbing indoors",
-      "8 weeks to race — specificity/sharpening phase, not base building",
+      "Flat terrain only (Estonia) \u2014 must simulate climbing indoors",
+      "8 weeks to race \u2014 specificity/sharpening phase, not base building",
       "No training May 17-23 (unavailable)",
       "Travel to Trieste May 27-28"
     ]
@@ -56,22 +82,99 @@
       "power": {
         "ftp": 237,
         "zones": [
-          { "zone": 1, "name": "Recovery", "percentLow": 0, "percentHigh": 55, "wattsLow": 0, "wattsHigh": 130 },
-          { "zone": 2, "name": "Aerobic", "percentLow": 56, "percentHigh": 75, "wattsLow": 133, "wattsHigh": 178 },
-          { "zone": 3, "name": "Tempo", "percentLow": 76, "percentHigh": 90, "wattsLow": 180, "wattsHigh": 213 },
-          { "zone": 4, "name": "Sub-threshold", "percentLow": 91, "percentHigh": 99, "wattsLow": 216, "wattsHigh": 235 },
-          { "zone": 5, "name": "Threshold", "percentLow": 100, "percentHigh": 105, "wattsLow": 237, "wattsHigh": 249 },
-          { "zone": 6, "name": "VO2max", "percentLow": 106, "percentHigh": 120, "wattsLow": 251, "wattsHigh": 284 }
+          {
+            "zone": 1,
+            "name": "Recovery",
+            "percentLow": 0,
+            "percentHigh": 55,
+            "wattsLow": 0,
+            "wattsHigh": 130
+          },
+          {
+            "zone": 2,
+            "name": "Aerobic",
+            "percentLow": 56,
+            "percentHigh": 75,
+            "wattsLow": 133,
+            "wattsHigh": 178
+          },
+          {
+            "zone": 3,
+            "name": "Tempo",
+            "percentLow": 76,
+            "percentHigh": 90,
+            "wattsLow": 180,
+            "wattsHigh": 213
+          },
+          {
+            "zone": 4,
+            "name": "Sub-threshold",
+            "percentLow": 91,
+            "percentHigh": 99,
+            "wattsLow": 216,
+            "wattsHigh": 235
+          },
+          {
+            "zone": 5,
+            "name": "Threshold",
+            "percentLow": 100,
+            "percentHigh": 105,
+            "wattsLow": 237,
+            "wattsHigh": 249
+          },
+          {
+            "zone": 6,
+            "name": "VO2max",
+            "percentLow": 106,
+            "percentHigh": 120,
+            "wattsLow": 251,
+            "wattsHigh": 284
+          }
         ]
       },
       "hr": {
         "lthr": 155,
         "zones": [
-          { "zone": 1, "name": "Recovery", "percentLow": 0, "percentHigh": 81, "hrLow": 0, "hrHigh": 126 },
-          { "zone": 2, "name": "Aerobic", "percentLow": 81, "percentHigh": 89, "hrLow": 126, "hrHigh": 138 },
-          { "zone": 3, "name": "Tempo", "percentLow": 90, "percentHigh": 93, "hrLow": 140, "hrHigh": 144 },
-          { "zone": 4, "name": "Sub-threshold", "percentLow": 94, "percentHigh": 99, "hrLow": 146, "hrHigh": 153 },
-          { "zone": 5, "name": "Threshold", "percentLow": 100, "percentHigh": 106, "hrLow": 155, "hrHigh": 164 }
+          {
+            "zone": 1,
+            "name": "Recovery",
+            "percentLow": 0,
+            "percentHigh": 81,
+            "hrLow": 0,
+            "hrHigh": 126
+          },
+          {
+            "zone": 2,
+            "name": "Aerobic",
+            "percentLow": 81,
+            "percentHigh": 89,
+            "hrLow": 126,
+            "hrHigh": 138
+          },
+          {
+            "zone": 3,
+            "name": "Tempo",
+            "percentLow": 90,
+            "percentHigh": 93,
+            "hrLow": 140,
+            "hrHigh": 144
+          },
+          {
+            "zone": 4,
+            "name": "Sub-threshold",
+            "percentLow": 94,
+            "percentHigh": 99,
+            "hrLow": 146,
+            "hrHigh": 153
+          },
+          {
+            "zone": 5,
+            "name": "Threshold",
+            "percentLow": 100,
+            "percentHigh": 106,
+            "hrLow": 155,
+            "hrHigh": 164
+          }
         ]
       }
     }
@@ -82,45 +185,91 @@
       "startWeek": 1,
       "endWeek": 3,
       "focus": "Volume buildup with climbing specificity",
-      "weeklyHoursRange": { "low": 12, "high": 18 },
-      "keyWorkouts": ["Long outdoor ride", "Indoor climbing intervals", "Back-to-back weekends"],
-      "physiologicalGoals": ["Rebuild climbing endurance", "Increase weekly volume toward peak", "Practice race nutrition"]
+      "weeklyHoursRange": {
+        "low": 12,
+        "high": 18
+      },
+      "keyWorkouts": [
+        "Long outdoor ride",
+        "Indoor climbing intervals",
+        "Back-to-back weekends"
+      ],
+      "physiologicalGoals": [
+        "Rebuild climbing endurance",
+        "Increase weekly volume toward peak",
+        "Practice race nutrition"
+      ]
     },
     {
       "name": "Recovery",
       "startWeek": 4,
       "endWeek": 4,
       "focus": "Absorb training load, mental refresh",
-      "weeklyHoursRange": { "low": 6, "high": 8 },
-      "keyWorkouts": ["Easy endurance rides only"],
-      "physiologicalGoals": ["Supercompensation", "Restore freshness for peak block"]
+      "weeklyHoursRange": {
+        "low": 6,
+        "high": 8
+      },
+      "keyWorkouts": [
+        "Easy endurance rides only"
+      ],
+      "physiologicalGoals": [
+        "Supercompensation",
+        "Restore freshness for peak block"
+      ]
     },
     {
       "name": "Peak",
       "startWeek": 5,
       "endWeek": 6,
       "focus": "Race-specific simulation, highest volume. Week 6 ends Sat May 16 before forced break.",
-      "weeklyHoursRange": { "low": 14, "high": 20 },
-      "keyWorkouts": ["Multi-day blocks", "Extended climbing sessions", "Night riding"],
-      "physiologicalGoals": ["Simulate race fatigue", "Validate nutrition strategy", "Practice sleep deprivation management"]
+      "weeklyHoursRange": {
+        "low": 14,
+        "high": 20
+      },
+      "keyWorkouts": [
+        "Multi-day blocks",
+        "Extended climbing sessions",
+        "Night riding"
+      ],
+      "physiologicalGoals": [
+        "Simulate race fatigue",
+        "Validate nutrition strategy",
+        "Practice sleep deprivation management"
+      ]
     },
     {
       "name": "Forced Break",
       "startWeek": 7,
       "endWeek": 7,
       "focus": "No training May 17-23. Acts as extended taper.",
-      "weeklyHoursRange": { "low": 0, "high": 1 },
+      "weeklyHoursRange": {
+        "low": 0,
+        "high": 1
+      },
       "keyWorkouts": [],
-      "physiologicalGoals": ["Deep recovery", "Supercompensation", "Mental refresh"]
+      "physiologicalGoals": [
+        "Deep recovery",
+        "Supercompensation",
+        "Mental refresh"
+      ]
     },
     {
       "name": "Race Week",
       "startWeek": 8,
       "endWeek": 8,
       "focus": "Shakeout rides, travel to Trieste, race start May 29",
-      "weeklyHoursRange": { "low": 2, "high": 4 },
-      "keyWorkouts": ["Openers", "Shakeout spins"],
-      "physiologicalGoals": ["Arrive fresh and confident", "Glycogen loading"]
+      "weeklyHoursRange": {
+        "low": 2,
+        "high": 4
+      },
+      "keyWorkouts": [
+        "Openers",
+        "Shakeout spins"
+      ],
+      "physiologicalGoals": [
+        "Arrive fresh and confident",
+        "Glycogen loading"
+      ]
     }
   ],
   "weeks": [
@@ -160,7 +309,8 @@
               "durationMinutes": 90,
               "primaryZone": "Zone 3",
               "humanReadable": "Warm-up: 15min Z2\nMain: 4 x 10min at 5-7% gradient (Z3, 180-213W) at 65-75rpm, 5min Z1 recovery\nCool-down: 15min Z1\n\nLow cadence to simulate real climbing. Focus on smooth pedaling under load.",
-              "completed": false
+              "completed": false,
+              "tss": 78
             }
           ]
         },
@@ -177,7 +327,8 @@
               "durationMinutes": 90,
               "primaryZone": "Zone 2",
               "humanReadable": "90min steady Z2 (133-178W, HR 126-138)\nFueling practice: take on 60g carbs/hr\nKeep cadence 85-95rpm",
-              "completed": false
+              "completed": false,
+              "tss": 63
             },
             {
               "id": "w1-wed-strength",
@@ -187,7 +338,8 @@
               "description": "Focus on posterior chain and core for bikepacking durability",
               "durationMinutes": 45,
               "humanReadable": "Circuit (3 rounds):\n- Squats: 3x8\n- Romanian deadlift: 3x8\n- Step-ups: 3x10 each leg\n- Plank: 3x60s\n- Dead bug: 3x12 each side\n- Back extensions: 3x12",
-              "completed": false
+              "completed": false,
+              "tss": 15
             }
           ]
         },
@@ -204,7 +356,8 @@
               "durationMinutes": 75,
               "primaryZone": "Zone 3-4",
               "humanReadable": "Warm-up: 15min Z2\nMain: 3 x 15min at 88-93% FTP (208-220W) at 65-70rpm, 5min Z1 recovery\nCool-down: 10min Z1",
-              "completed": false
+              "completed": false,
+              "tss": 84
             }
           ]
         },
@@ -221,7 +374,8 @@
               "durationMinutes": 45,
               "primaryZone": "Zone 1",
               "humanReadable": "45min Z1 (<130W, HR <126)\nVery easy, coffee ride pace\nOptional: substitute with yoga/stretching",
-              "completed": false
+              "completed": false,
+              "tss": 19
             }
           ]
         },
@@ -239,7 +393,8 @@
               "distanceKm": 100,
               "primaryZone": "Zone 2",
               "humanReadable": "4h outdoor ride, ~100km\nZ2 effort (HR 126-138)\nPractice race nutrition: 60-80g carbs/hr\nInclude any available hills\nCarry bikepacking-style load if possible",
-              "completed": false
+              "completed": false,
+              "tss": 169
             }
           ]
         },
@@ -256,8 +411,9 @@
               "durationMinutes": 150,
               "distanceKm": 60,
               "primaryZone": "Zone 2",
-              "humanReadable": "2.5h outdoor ride on tired legs\nZ2 effort, accept slightly lower power than usual\nFueling practice continues\nNote how legs feel at start — this is how TBR Day 2+ will feel",
-              "completed": false
+              "humanReadable": "2.5h outdoor ride on tired legs\nZ2 effort, accept slightly lower power than usual\nFueling practice continues\nNote how legs feel at start \u2014 this is how TBR Day 2+ will feel",
+              "completed": false,
+              "tss": 106
             }
           ]
         }
@@ -265,9 +421,18 @@
       "summary": {
         "totalHours": 12,
         "bySport": {
-          "bike": { "sessions": 6, "hours": 11.3, "km": 260 },
-          "strength": { "sessions": 1, "hours": 0.8, "km": 0 }
-        }
+          "bike": {
+            "sessions": 6,
+            "hours": 11.3,
+            "km": 260
+          },
+          "strength": {
+            "sessions": 1,
+            "hours": 0.8,
+            "km": 0
+          }
+        },
+        "weeklyTSS": 534
       }
     },
     {
@@ -305,8 +470,9 @@
               "description": "Longer climbing blocks to build sustained climbing endurance",
               "durationMinutes": 105,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 15min Z2\nMain: 3 x 15min at 5-8% gradient (Z3, 180-213W) at 65-70rpm, 5min Z1 recovery\nFinish: 1 x 10min at Z4 (216-235W) — threshold climbing\nCool-down: 10min Z1",
-              "completed": false
+              "humanReadable": "Warm-up: 15min Z2\nMain: 3 x 15min at 5-8% gradient (Z3, 180-213W) at 65-70rpm, 5min Z1 recovery\nFinish: 1 x 10min at Z4 (216-235W) \u2014 threshold climbing\nCool-down: 10min Z1",
+              "completed": false,
+              "tss": 91
             }
           ]
         },
@@ -323,7 +489,8 @@
               "durationMinutes": 105,
               "primaryZone": "Zone 2",
               "humanReadable": "1h45 steady Z2 (133-178W)\nPractice eating real food on the bike (bars, rice cakes, sandwiches)\nTarget 70g carbs/hr",
-              "completed": false
+              "completed": false,
+              "tss": 74
             },
             {
               "id": "w2-wed-strength",
@@ -333,7 +500,8 @@
               "description": "Lower body and core focus",
               "durationMinutes": 45,
               "humanReadable": "Circuit (3 rounds):\n- Front squats: 3x8\n- Single-leg deadlift: 3x8 each\n- Bulgarian split squat: 3x8 each\n- Pallof press: 3x10 each side\n- Hip thrusts: 3x12\n- Side plank: 3x40s each",
-              "completed": false
+              "completed": false,
+              "tss": 15
             }
           ]
         },
@@ -346,11 +514,12 @@
               "sport": "bike",
               "type": "threshold",
               "name": "Over-Under Climbing",
-              "description": "Over-under intervals simulate surging on climbs — push over threshold, settle below",
+              "description": "Over-under intervals simulate surging on climbs \u2014 push over threshold, settle below",
               "durationMinutes": 90,
               "primaryZone": "Zone 4",
               "humanReadable": "Warm-up: 15min Z2 with 3x30s accelerations\nMain: 4 x 8min [(2min @ 95% FTP/225W, 1min @ 108% FTP/256W) x2 + 2min @ 95%], 5min Z1 recovery\nCool-down: 15min Z1\n\nLow cadence (65-70rpm) throughout intervals",
-              "completed": false
+              "completed": false,
+              "tss": 108
             }
           ]
         },
@@ -384,7 +553,8 @@
               "distanceKm": 120,
               "primaryZone": "Zone 2-3",
               "humanReadable": "5h outdoor ride, ~120km\nFirst 2h: Z2 steady\nHours 3-4: Include 3 x 15min Z3 tempo (180-213W) with 5min Z2 between\nFinal hour: Z2 easy\n\nPractice race nutrition: 70-80g carbs/hr\nCarry bikepacking bags if available",
-              "completed": false
+              "completed": false,
+              "tss": 245
             }
           ]
         },
@@ -401,8 +571,9 @@
               "durationMinutes": 210,
               "distanceKm": 80,
               "primaryZone": "Zone 2",
-              "humanReadable": "3.5h outdoor ride on fatigued legs\nAll Z2, no intensity\nPractice starting when legs feel heavy — this IS race prep\nContinue nutrition practice",
-              "completed": false
+              "humanReadable": "3.5h outdoor ride on fatigued legs\nAll Z2, no intensity\nPractice starting when legs feel heavy \u2014 this IS race prep\nContinue nutrition practice",
+              "completed": false,
+              "tss": 148
             }
           ]
         }
@@ -410,9 +581,18 @@
       "summary": {
         "totalHours": 15,
         "bySport": {
-          "bike": { "sessions": 6, "hours": 14, "km": 370 },
-          "strength": { "sessions": 1, "hours": 0.8, "km": 0 }
-        }
+          "bike": {
+            "sessions": 6,
+            "hours": 14,
+            "km": 370
+          },
+          "strength": {
+            "sessions": 1,
+            "hours": 0.8,
+            "km": 0
+          }
+        },
+        "weeklyTSS": 681
       }
     },
     {
@@ -420,7 +600,7 @@
       "startDate": "2026-04-20",
       "endDate": "2026-04-26",
       "phase": "Build",
-      "focus": "Peak build week — highest pre-recovery volume, extended climbing",
+      "focus": "Peak build week \u2014 highest pre-recovery volume, extended climbing",
       "targetHours": 18,
       "isRecoveryWeek": false,
       "days": [
@@ -437,7 +617,8 @@
               "durationMinutes": 45,
               "primaryZone": "Zone 1",
               "humanReadable": "45min Z1 easy spin\nHigh cadence (95+rpm), very low power\nNo effort, just blood flow",
-              "completed": false
+              "completed": false,
+              "tss": 19
             }
           ]
         },
@@ -454,7 +635,8 @@
               "durationMinutes": 150,
               "primaryZone": "Zone 2-3",
               "humanReadable": "Warm-up: 15min Z2\nMain: 2h continuous climbing simulation\n- Alternate 10min Z3 (180-213W) at 65rpm with 10min Z2 (133-178W) at 75rpm\n- Simulate gradient changes between 4-10%\nCool-down: 15min Z1\n\nThis simulates the sustained climbing of a TBR mountain day\nFuel: 70g carbs/hr throughout",
-              "completed": false
+              "completed": false,
+              "tss": 116
             }
           ]
         },
@@ -472,17 +654,19 @@
               "distanceKm": 50,
               "primaryZone": "Zone 2",
               "humanReadable": "2h outdoor ride with full bikepacking bags\nZ2 effort (the bags will make this harder)\nPractice bike handling with loaded bike\nNote any comfort issues for bike fit adjustment",
-              "completed": false
+              "completed": false,
+              "tss": 85
             },
             {
               "id": "w3-wed-strength",
               "sport": "strength",
               "type": "strength",
-              "name": "Strength — Endurance Focus",
-              "description": "Higher reps, moderate weight — shifting toward maintenance",
+              "name": "Strength \u2014 Endurance Focus",
+              "description": "Higher reps, moderate weight \u2014 shifting toward maintenance",
               "durationMinutes": 40,
               "humanReadable": "Circuit (2-3 rounds):\n- Goblet squats: 3x12\n- Single-leg calf raises: 3x15 each\n- Prone Y-T-W raises: 3x10 (shoulder stability for aero position)\n- Core circuit: plank 60s, side plank 30s each, bird dog 10 each",
-              "completed": false
+              "completed": false,
+              "tss": 13
             }
           ]
         },
@@ -495,11 +679,12 @@
               "sport": "bike",
               "type": "tempo",
               "name": "Sustained Tempo",
-              "description": "Long tempo blocks at race-realistic effort — this is your race pace on climbs",
+              "description": "Long tempo blocks at race-realistic effort \u2014 this is your race pace on climbs",
               "durationMinutes": 105,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 15min Z2\nMain: 2 x 25min Z3 tempo (180-213W) at 65-75rpm, 10min Z2 between\nFinish: 1 x 5min Z4 (216-235W) — end-of-climb push\nCool-down: 10min Z1",
-              "completed": false
+              "humanReadable": "Warm-up: 15min Z2\nMain: 2 x 25min Z3 tempo (180-213W) at 65-75rpm, 10min Z2 between\nFinish: 1 x 5min Z4 (216-235W) \u2014 end-of-climb push\nCool-down: 10min Z1",
+              "completed": false,
+              "tss": 106
             }
           ]
         },
@@ -530,8 +715,9 @@
               "durationMinutes": 420,
               "distanceKm": 165,
               "primaryZone": "Zone 2",
-              "humanReadable": "7h outdoor ride, ~165km\nZ2 effort throughout\nFull race nutrition rehearsal: 70-80g carbs/hr (bars, gels, real food mix)\nRide with loaded bikepacking bags\nPractice cafe/shop resupply stops\n\nThis is your Solstice 100-miles effort level — you know how to do this",
-              "completed": false
+              "humanReadable": "7h outdoor ride, ~165km\nZ2 effort throughout\nFull race nutrition rehearsal: 70-80g carbs/hr (bars, gels, real food mix)\nRide with loaded bikepacking bags\nPractice cafe/shop resupply stops\n\nThis is your Solstice 100-miles effort level \u2014 you know how to do this",
+              "completed": false,
+              "tss": 296
             }
           ]
         },
@@ -548,8 +734,9 @@
               "durationMinutes": 240,
               "distanceKm": 100,
               "primaryZone": "Zone 2",
-              "humanReadable": "4h outdoor ride on fatigued legs\nZ2, accept reduced power output\nThis mirrors TBR Day 2-3 fatigue\nContinue nutrition practice\nNote: if legs feel destroyed, reduce to 3h — recovery week is next",
-              "completed": false
+              "humanReadable": "4h outdoor ride on fatigued legs\nZ2, accept reduced power output\nThis mirrors TBR Day 2-3 fatigue\nContinue nutrition practice\nNote: if legs feel destroyed, reduce to 3h \u2014 recovery week is next",
+              "completed": false,
+              "tss": 169
             }
           ]
         }
@@ -557,9 +744,18 @@
       "summary": {
         "totalHours": 18,
         "bySport": {
-          "bike": { "sessions": 6, "hours": 17.3, "km": 450 },
-          "strength": { "sessions": 1, "hours": 0.7, "km": 0 }
-        }
+          "bike": {
+            "sessions": 6,
+            "hours": 17.3,
+            "km": 450
+          },
+          "strength": {
+            "sessions": 1,
+            "hours": 0.7,
+            "km": 0
+          }
+        },
+        "weeklyTSS": 804
       }
     },
     {
@@ -598,7 +794,8 @@
               "durationMinutes": 60,
               "primaryZone": "Zone 1-2",
               "humanReadable": "60min Z1-Z2 easy spin\nNo structure, just enjoy the bike\nOutdoor preferred for mental refresh",
-              "completed": false
+              "completed": false,
+              "tss": 25
             }
           ]
         },
@@ -613,7 +810,7 @@
               "name": "Yoga / Stretching",
               "description": "Active recovery focusing on hip mobility and back",
               "durationMinutes": 45,
-              "humanReadable": "45min yoga session\nFocus: hip flexors, hamstrings, lower back, neck/shoulders\nGentle — this is recovery, not a workout",
+              "humanReadable": "45min yoga session\nFocus: hip flexors, hamstrings, lower back, neck/shoulders\nGentle \u2014 this is recovery, not a workout",
               "completed": false
             }
           ]
@@ -631,7 +828,8 @@
               "durationMinutes": 60,
               "primaryZone": "Zone 1-2",
               "humanReadable": "60min mostly Z1-Z2\nInclude 4 x 30s accelerations to Z4-Z5 with 3min easy between\nThese 'openers' maintain neuromuscular engagement without adding fatigue",
-              "completed": false
+              "completed": false,
+              "tss": 25
             }
           ]
         },
@@ -663,7 +861,8 @@
               "distanceKm": 60,
               "primaryZone": "Zone 2",
               "humanReadable": "2.5h outdoor ride, Z2\nShould feel easy and refreshing\nIf legs still feel heavy, cut to 2h",
-              "completed": false
+              "completed": false,
+              "tss": 106
             }
           ]
         },
@@ -681,7 +880,8 @@
               "distanceKm": 30,
               "primaryZone": "Zone 2",
               "humanReadable": "75min Z2\nIf legs feel snappy and fresh, you're ready for the peak block\nIf still tired, take Monday as full rest too",
-              "completed": false
+              "completed": false,
+              "tss": 53
             }
           ]
         }
@@ -689,8 +889,13 @@
       "summary": {
         "totalHours": 7,
         "bySport": {
-          "bike": { "sessions": 4, "hours": 5.8, "km": 150 }
-        }
+          "bike": {
+            "sessions": 4,
+            "hours": 5.8,
+            "km": 150
+          }
+        },
+        "weeklyTSS": 209
       }
     },
     {
@@ -728,8 +933,9 @@
               "description": "The key indoor climbing session. Simulates a full TBR mountain day.",
               "durationMinutes": 180,
               "primaryZone": "Zone 2-3",
-              "humanReadable": "Warm-up: 15min Z2\nMain: 2.5h continuous climbing simulation\n- Alternate 15min Z3 (180-213W) at 60-70rpm with 10min Z2 (133-178W) at 75rpm\n- Simulate a virtual climbing route with sustained gradients\n- Total climbing time: ~90min at Z3\nCool-down: 10min Z1\n\nFuel: 80g carbs/hr — this is race fueling rate\nMental: Practice settling into discomfort. This IS the race.",
-              "completed": false
+              "humanReadable": "Warm-up: 15min Z2\nMain: 2.5h continuous climbing simulation\n- Alternate 15min Z3 (180-213W) at 60-70rpm with 10min Z2 (133-178W) at 75rpm\n- Simulate a virtual climbing route with sustained gradients\n- Total climbing time: ~90min at Z3\nCool-down: 10min Z1\n\nFuel: 80g carbs/hr \u2014 this is race fueling rate\nMental: Practice settling into discomfort. This IS the race.",
+              "completed": false,
+              "tss": 139
             }
           ]
         },
@@ -746,18 +952,20 @@
               "durationMinutes": 150,
               "distanceKm": 60,
               "primaryZone": "Zone 2",
-              "humanReadable": "2.5h outdoor with bikepacking bags loaded\nAll Z2 — practice bike handling, comfort\nTest any new equipment or clothing for the race\nNote: reduce intensity if Tuesday's session left you fatigued",
-              "completed": false
+              "humanReadable": "2.5h outdoor with bikepacking bags loaded\nAll Z2 \u2014 practice bike handling, comfort\nTest any new equipment or clothing for the race\nNote: reduce intensity if Tuesday's session left you fatigued",
+              "completed": false,
+              "tss": 106
             },
             {
               "id": "w5-wed-strength",
               "sport": "strength",
               "type": "maintenance",
-              "name": "Strength — Maintenance",
+              "name": "Strength \u2014 Maintenance",
               "description": "Reduced strength work. Last proper strength session before the race.",
               "durationMinutes": 30,
               "humanReadable": "Maintenance only (2 rounds):\n- Squats: 2x8 (lighter weight)\n- Single-leg deadlift: 2x8 each\n- Core circuit: plank 45s, dead bug 10 each\n\nThis is the last strength session before TBR",
-              "completed": false
+              "completed": false,
+              "tss": 10
             }
           ]
         },
@@ -773,8 +981,9 @@
               "description": "Race-pace climbing with sustained tempo efforts",
               "durationMinutes": 105,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 15min Z2\nMain: 2 x 20min Z3 at 65rpm (simulated 6-8% grade, 180-213W), 8min Z2 between\nFinish: 1 x 10min descending at high cadence (100+rpm, Z2)\nCool-down: 10min Z1\n\nPractice descending position too — TBR has long descents",
-              "completed": false
+              "humanReadable": "Warm-up: 15min Z2\nMain: 2 x 20min Z3 at 65rpm (simulated 6-8% grade, 180-213W), 8min Z2 between\nFinish: 1 x 10min descending at high cadence (100+rpm, Z2)\nCool-down: 10min Z1\n\nPractice descending position too \u2014 TBR has long descents",
+              "completed": false,
+              "tss": 106
             }
           ]
         },
@@ -791,7 +1000,8 @@
               "durationMinutes": 45,
               "primaryZone": "Zone 1",
               "humanReadable": "45min Z1 easy spin\nPrepare weekend gear:\n- Pack nutrition for 2 days\n- Check bike mechanics\n- Plan routes for Saturday and Sunday",
-              "completed": false
+              "completed": false,
+              "tss": 19
             }
           ]
         },
@@ -803,13 +1013,14 @@
               "id": "w5-sat-epic",
               "sport": "bike",
               "type": "endurance",
-              "name": "Peak Long Ride — Race Simulation",
+              "name": "Peak Long Ride \u2014 Race Simulation",
               "description": "The biggest ride of the plan. Full race rehearsal day.",
               "durationMinutes": 480,
               "distanceKm": 180,
               "primaryZone": "Zone 2",
               "humanReadable": "8h outdoor ride, ~180km\nZ2 with natural terrain variation\nFull race nutrition: 80g carbs/hr for the entire ride\nBikepacking bags loaded\n\nThis is your final 'proof of concept' ride.\nAim to finish strong, not fast.\nPractice:\n- Eating every 30min\n- Hydration (target 500-750ml/hr)\n- Saddle comfort over 6+ hours\n- Navigation (use GPS as you will in the race)",
-              "completed": false
+              "completed": false,
+              "tss": 338
             }
           ]
         },
@@ -821,13 +1032,14 @@
               "id": "w5-sun-backtoback",
               "sport": "bike",
               "type": "endurance",
-              "name": "Back-to-Back Day 2 — Fatigue Riding",
+              "name": "Back-to-Back Day 2 \u2014 Fatigue Riding",
               "description": "Ride on deeply fatigued legs. The most race-specific session of the plan.",
               "durationMinutes": 300,
               "distanceKm": 120,
               "primaryZone": "Zone 2",
-              "humanReadable": "5h on tired legs after yesterday's 8h ride\nZ2 effort, accept lower power\n\nThis 13h weekend block (8h + 5h) simulates consecutive TBR days.\nPay attention to:\n- How long does it take for legs to loosen up?\n- Any pain points (saddle, hands, neck)?\n- Does nutrition strategy hold up on Day 2?\n- Mental state — boredom, motivation",
-              "completed": false
+              "humanReadable": "5h on tired legs after yesterday's 8h ride\nZ2 effort, accept lower power\n\nThis 13h weekend block (8h + 5h) simulates consecutive TBR days.\nPay attention to:\n- How long does it take for legs to loosen up?\n- Any pain points (saddle, hands, neck)?\n- Does nutrition strategy hold up on Day 2?\n- Mental state \u2014 boredom, motivation",
+              "completed": false,
+              "tss": 211
             }
           ]
         }
@@ -835,9 +1047,18 @@
       "summary": {
         "totalHours": 20,
         "bySport": {
-          "bike": { "sessions": 6, "hours": 19.3, "km": 520 },
-          "strength": { "sessions": 1, "hours": 0.5, "km": 0 }
-        }
+          "bike": {
+            "sessions": 6,
+            "hours": 19.3,
+            "km": 520
+          },
+          "strength": {
+            "sessions": 1,
+            "hours": 0.5,
+            "km": 0
+          }
+        },
+        "weeklyTSS": 929
       }
     },
     {
@@ -862,7 +1083,8 @@
               "durationMinutes": 45,
               "primaryZone": "Zone 1",
               "humanReadable": "45min Z1 easy spin\nFlush legs after the big weekend\nGentle stretching afterward",
-              "completed": false
+              "completed": false,
+              "tss": 19
             }
           ]
         },
@@ -879,7 +1101,8 @@
               "durationMinutes": 120,
               "primaryZone": "Zone 2-3",
               "humanReadable": "Warm-up: 15min Z2\nMain: 80min of climbing simulation\n- 4 x 15min Z3 (180-213W) at 65rpm with 5min Z2 between\nCool-down: 10min Z1\n\nLast chance to train climbing power. After this week, volume drops.",
-              "completed": false
+              "completed": false,
+              "tss": 92
             }
           ]
         },
@@ -891,13 +1114,14 @@
               "id": "w6-wed-endurance",
               "sport": "bike",
               "type": "endurance",
-              "name": "Endurance Ride — Final Equipment Shakedown",
+              "name": "Endurance Ride \u2014 Final Equipment Shakedown",
               "description": "Outdoor endurance with exact race setup",
               "durationMinutes": 120,
               "distanceKm": 50,
               "primaryZone": "Zone 2",
-              "humanReadable": "2h outdoor Z2\nRide with EXACT race setup — bags, clothing, lights, navigation\nThis is the final equipment check. Fix anything that doesn't work.\nAfter today, no new gear.",
-              "completed": false
+              "humanReadable": "2h outdoor Z2\nRide with EXACT race setup \u2014 bags, clothing, lights, navigation\nThis is the final equipment check. Fix anything that doesn't work.\nAfter today, no new gear.",
+              "completed": false,
+              "tss": 85
             }
           ]
         },
@@ -915,7 +1139,8 @@
               "distanceKm": 40,
               "primaryZone": "Zone 2",
               "humanReadable": "2h ride starting at dusk, finishing in full darkness\nZ2 effort\nPractice:\n- Light setup (helmet + bar light)\n- Navigation in darkness\n- Managing drowsiness\n- Eating/drinking in the dark\n\nStart around 20:00-21:00 for May Estonian conditions",
-              "completed": false
+              "completed": false,
+              "tss": 85
             }
           ]
         },
@@ -941,13 +1166,14 @@
               "id": "w6-sat-long",
               "sport": "bike",
               "type": "endurance",
-              "name": "Final Long Ride — Confidence Builder",
+              "name": "Final Long Ride \u2014 Confidence Builder",
               "description": "Last long ride before the break. Confidence builder, not fitness builder.",
               "durationMinutes": 300,
               "distanceKm": 120,
               "primaryZone": "Zone 2",
-              "humanReadable": "5h outdoor ride, ~120km\nZ2 throughout — no heroics\nFull race setup: bike bags, nutrition plan, clothing\n\nThis ride should feel EASY. You've done way harder.\nGoal: confirm everything works, enjoy the ride, build confidence.\nLast hard day before 12-day taper+break into race start.",
-              "completed": false
+              "humanReadable": "5h outdoor ride, ~120km\nZ2 throughout \u2014 no heroics\nFull race setup: bike bags, nutrition plan, clothing\n\nThis ride should feel EASY. You've done way harder.\nGoal: confirm everything works, enjoy the ride, build confidence.\nLast hard day before 12-day taper+break into race start.",
+              "completed": false,
+              "tss": 211
             }
           ]
         },
@@ -960,7 +1186,7 @@
               "sport": "rest",
               "type": "rest",
               "name": "Break Starts",
-              "description": "Unavailable. Forced break begins. The fitness is banked — trust it.",
+              "description": "Unavailable. Forced break begins. The fitness is banked \u2014 trust it.",
               "completed": false
             }
           ]
@@ -969,8 +1195,13 @@
       "summary": {
         "totalHours": 14,
         "bySport": {
-          "bike": { "sessions": 5, "hours": 12.8, "km": 330 }
-        }
+          "bike": {
+            "sessions": 5,
+            "hours": 12.8,
+            "km": 330
+          }
+        },
+        "weeklyTSS": 492
       }
     },
     {
@@ -990,7 +1221,7 @@
               "id": "w7-mon-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 2",
+              "name": "Break \u2014 Day 2",
               "description": "Rest. You have massive fitness banked from years of ultra-cycling and 6 weeks of focused TBR prep.",
               "completed": false
             }
@@ -1004,7 +1235,7 @@
               "id": "w7-tue-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 3",
+              "name": "Break \u2014 Day 3",
               "description": "Rest. A 7-day break after a training block is a legitimate taper strategy for ultra events.",
               "completed": false
             }
@@ -1018,7 +1249,7 @@
               "id": "w7-wed-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 4",
+              "name": "Break \u2014 Day 4",
               "description": "Rest. Stay active with walking, gentle stretching. Avoid sitting all day.",
               "completed": false
             }
@@ -1032,7 +1263,7 @@
               "id": "w7-thu-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 5",
+              "name": "Break \u2014 Day 5",
               "description": "Rest. Begin thinking about race logistics: packing lists, nutrition plan, sleep strategy.",
               "completed": false
             }
@@ -1046,7 +1277,7 @@
               "id": "w7-fri-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 6",
+              "name": "Break \u2014 Day 6",
               "description": "Rest. Review TBR route, checkpoints, cutoff times. Visualize the race.",
               "completed": false
             }
@@ -1060,7 +1291,7 @@
               "id": "w7-sat-off",
               "sport": "rest",
               "type": "rest",
-              "name": "Break — Day 7 (Last day off)",
+              "name": "Break \u2014 Day 7 (Last day off)",
               "description": "Final rest day. Tomorrow you return to the bike for shakeout rides.",
               "completed": false
             }
@@ -1078,8 +1309,9 @@
               "description": "First ride back after 7 days off. Easy spin with openers to wake up the legs.",
               "durationMinutes": 60,
               "primaryZone": "Zone 1-2",
-              "humanReadable": "60min mostly Z1-Z2\nFirst 30min: very easy, let the body remember what cycling feels like\nThen: 5 x 30s at Z5 (237-249W) with 3min easy between\n\nLegs may feel sluggish at first — totally normal after a week off.\nThe openers will wake up neuromuscular pathways.\nDon't panic if power feels low — it's a taper effect, not fitness loss.",
-              "completed": false
+              "humanReadable": "60min mostly Z1-Z2\nFirst 30min: very easy, let the body remember what cycling feels like\nThen: 5 x 30s at Z5 (237-249W) with 3min easy between\n\nLegs may feel sluggish at first \u2014 totally normal after a week off.\nThe openers will wake up neuromuscular pathways.\nDon't panic if power feels low \u2014 it's a taper effect, not fitness loss.",
+              "completed": false,
+              "tss": 25
             }
           ]
         }
@@ -1087,8 +1319,13 @@
       "summary": {
         "totalHours": 1,
         "bySport": {
-          "bike": { "sessions": 1, "hours": 1, "km": 25 }
-        }
+          "bike": {
+            "sessions": 1,
+            "hours": 1,
+            "km": 25
+          }
+        },
+        "weeklyTSS": 25
       }
     },
     {
@@ -1113,7 +1350,8 @@
               "durationMinutes": 60,
               "primaryZone": "Zone 1-2",
               "humanReadable": "60min easy ride\nInclude 3 x 2min at Z3 (180-213W) with 3min Z1 between\n\nLegs should feel significantly better than yesterday.\nThis confirms the taper is working.\n\nBegin carb loading today: increase carb intake to 8-10g/kg/day",
-              "completed": false
+              "completed": false,
+              "tss": 25
             }
           ]
         },
@@ -1130,7 +1368,8 @@
               "durationMinutes": 30,
               "primaryZone": "Zone 1",
               "humanReadable": "30min Z1 easy spin\n2 x 15s acceleration to race start pace\n\nFinal bike check:\n- Tire pressure / tubeless sealant fresh\n- Chain lubed\n- Lights charged + spare batteries packed\n- GPS loaded with TBR route\n- Bags packed and balanced\n- Spare tube, patches, multi-tool, chain link\n\nPack bike for travel",
-              "completed": false
+              "completed": false,
+              "tss": 12
             }
           ]
         },
@@ -1142,7 +1381,7 @@
               "id": "w8-wed-travel",
               "sport": "rest",
               "type": "rest",
-              "name": "Travel Day 1 — To Trieste",
+              "name": "Travel Day 1 \u2014 To Trieste",
               "description": "Travel to Trieste. Continue carb loading. Stay hydrated. Walk to keep blood flowing.",
               "completed": false
             }
@@ -1160,8 +1399,9 @@
               "description": "Short shakeout spin around Trieste to confirm bike works after travel",
               "durationMinutes": 20,
               "primaryZone": "Zone 1",
-              "humanReadable": "20min very easy spin around Trieste\nConfirm bike is assembled correctly after travel:\n- Shifters, brakes, lights, GPS all working\n- Bags seated properly\n- Nothing rattles\n\nEvening: early dinner, high carb (pasta, rice)\nBed by 21:00-22:00 — race start is 09:00 Friday May 29",
-              "completed": false
+              "humanReadable": "20min very easy spin around Trieste\nConfirm bike is assembled correctly after travel:\n- Shifters, brakes, lights, GPS all working\n- Bags seated properly\n- Nothing rattles\n\nEvening: early dinner, high carb (pasta, rice)\nBed by 21:00-22:00 \u2014 race start is 09:00 Friday May 29",
+              "completed": false,
+              "tss": 8
             }
           ]
         }
@@ -1169,8 +1409,13 @@
       "summary": {
         "totalHours": 3,
         "bySport": {
-          "bike": { "sessions": 3, "hours": 1.8, "km": 40 }
-        }
+          "bike": {
+            "sessions": 3,
+            "hours": 1.8,
+            "km": 40
+          }
+        },
+        "weeklyTSS": 45
       }
     }
   ],
@@ -1179,12 +1424,23 @@
       "name": "Trans Balkan Race 2026",
       "date": "2026-05-29",
       "type": "ultra-bikepacking",
-      "distances": { "bike": 1387 },
+      "distances": {
+        "bike": 1387
+      },
       "elevation": 24500,
       "cutoffs": {
-        "CP1_Mazin": { "km": 451, "cutoff": "2026-06-01T17:00:00+02:00" },
-        "CP2_Kopilovi": { "km": 1060, "cutoff": "2026-06-04T23:59:00+02:00" },
-        "Finish_Risan": { "km": 1387, "cutoff": "2026-06-07T23:59:00+02:00" }
+        "CP1_Mazin": {
+          "km": 451,
+          "cutoff": "2026-06-01T17:00:00+02:00"
+        },
+        "CP2_Kopilovi": {
+          "km": 1060,
+          "cutoff": "2026-06-04T23:59:00+02:00"
+        },
+        "Finish_Risan": {
+          "km": 1387,
+          "cutoff": "2026-06-07T23:59:00+02:00"
+        }
       }
     },
     "pacing": {
@@ -1201,7 +1457,7 @@
         "notes": "Ultra pacing: if you feel good, you're going too hard. Save matches for Day 5+."
       },
       "dayByDay": {
-        "day1": "Conservative start. Resist the adrenaline. You know from Hydra — Day 1 pace sets the tone.",
+        "day1": "Conservative start. Resist the adrenaline. You know from Hydra \u2014 Day 1 pace sets the tone.",
         "day2_3": "Settle into rhythm. 14-16h riding days. Steady Z2 effort.",
         "day4_5": "The hard middle. Fatigue accumulates. This is where discipline matters most.",
         "day6_7": "You've done this before (Hydra E6-E7). Dig deep but stay smart.",
@@ -1209,7 +1465,7 @@
       }
     },
     "nutrition": {
-      "preRace": "Morning of May 29: 3h before start — 100-150g carbs (oatmeal, banana, toast). Coffee.",
+      "preRace": "Morning of May 29: 3h before start \u2014 100-150g carbs (oatmeal, banana, toast). Coffee.",
       "during": {
         "carbsPerHour": 80,
         "fluidPerHour": "500-750ml depending on temperature",
@@ -1218,7 +1474,7 @@
         "dailyTarget": "6000-8000 kcal intake target (you'll burn more, but gut limits absorption)"
       },
       "resupply": "Plan resupply stops every 60-100km. Gas stations, bakeries, shops in towns along route.",
-      "notes": "Day 3-4 appetite may crash — force yourself to eat. Savory foods often work better than sweet after Day 2."
+      "notes": "Day 3-4 appetite may crash \u2014 force yourself to eat. Savory foods often work better than sweet after Day 2."
     },
     "sleep": {
       "strategy": "4-5h per night, ideally 00:30-06:30 CEST (per your race simulation model)",
