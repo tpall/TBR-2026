@@ -143,10 +143,10 @@ SPOT GEN4 devices available for rent. €200 cash deposit at accreditation, refu
 
 ### Getting to the Start (Trieste)
 - Trieste Airport: 30 min by train (~€5)
-- Ljubljana Airport: direct trains several times/day (~€9)
+- **Ljubljana Airport**: direct trains several times/day (~€9) — *[my planned arrival → see logistics checklist](logistics_checklist.md)*
 - Venice Airport also nearby
 
 ### Getting Home from Kotor Bay
-- Tivat Airport: 14 km
+- **Tivat Airport**: 14 km — *[my planned departure → see logistics checklist](logistics_checklist.md)*
 - Podgorica Airport: 80 km (more connections)
 - Ferry (Jadrolinja) and bus options available
