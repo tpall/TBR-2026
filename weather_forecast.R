@@ -13,14 +13,15 @@ invisible(Sys.setlocale("LC_TIME", "C"))
 
 # ── Parameters ────────────────────────────────────────────────────────────────
 
-WAYPOINTS_CSV <- "waypoints.csv"   # generated once from GPX; see prepare_waypoints.R
-RACE_START    <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Belgrade")
-RACE_END      <- as.POSIXct("2026-06-07 23:59:00", tz = "Europe/Belgrade")
-NIGHT_START_H <- 22  # nighttime window 22:00 → 06:00 next day
-NIGHT_END_H   <- 6
-HIGH_ALT_M    <- 1000
-OUT_MD        <- "weather_forecast.md"
-OUT_JSON      <- "weather_forecast.json"
+WAYPOINTS_CSV       <- "waypoints.csv"   # generated once from GPX; see prepare_waypoints.R
+RACE_START          <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Belgrade")
+RACE_END            <- as.POSIXct("2026-06-07 23:59:00", tz = "Europe/Belgrade")
+NIGHT_START_H       <- 22       # nighttime window 22:00 → 06:00 next day
+NIGHT_END_H         <- 6
+HIGH_ALT_M          <- 1000     # waypoints at/above this elevation get ⛰️ marker
+NIGHT_RAIN_ALERT_MM <- 3        # threshold for "Nights with measurable rain" section
+OUT_MD              <- "weather_forecast.md"
+OUT_JSON            <- "weather_forecast.json"
 
 # ── Load waypoints (committed CSV, no GPX dependency) ────────────────────────
 
@@ -33,21 +34,22 @@ print(waypoints, n = Inf)
 fetch_forecast <- function(lat, lon, ele) {
   resp <- request("https://api.open-meteo.com/v1/forecast") |>
     req_url_query(
-      latitude  = lat,
-      longitude = lon,
-      elevation = ele,                       # tell API to use waypoint elevation, not station
-      daily     = paste(c(
+      latitude        = lat,
+      longitude       = lon,
+      elevation       = ele,                 # tell API to use waypoint elevation, not station
+      wind_speed_unit = "ms",                # report wind in m/s
+      daily           = paste(c(
         "temperature_2m_max", "temperature_2m_min",
         "precipitation_sum", "precipitation_probability_max",
         "wind_speed_10m_max", "wind_gusts_10m_max",
         "weather_code"
       ), collapse = ","),
-      hourly    = paste(c(
+      hourly          = paste(c(
         "temperature_2m", "precipitation",
         "wind_speed_10m", "wind_gusts_10m"
       ), collapse = ","),
-      forecast_days = 16,
-      timezone      = "Europe/Belgrade"
+      forecast_days   = 16,
+      timezone        = "Europe/Belgrade"
     ) |>
     req_retry(max_tries = 3, backoff = ~5) |>
     req_perform()
@@ -68,17 +70,17 @@ fetch_forecast <- function(lat, lon, ele) {
     tmax       = pad_to(body$daily$temperature_2m_max, n_days),
     precip_mm  = pad_to(body$daily$precipitation_sum, n_days),
     precip_pct = pad_to(body$daily$precipitation_probability_max, n_days),
-    wind_kmh   = pad_to(body$daily$wind_speed_10m_max, n_days),
-    gust_kmh   = pad_to(body$daily$wind_gusts_10m_max, n_days),
+    wind_ms    = pad_to(body$daily$wind_speed_10m_max, n_days),
+    gust_ms    = pad_to(body$daily$wind_gusts_10m_max, n_days),
     wcode      = pad_to(body$daily$weather_code, n_days)
   )
 
   hourly <- tibble(
-    ts        = as.POSIXct(unlist(body$hourly$time), tz = "Europe/Belgrade"),
-    temp      = unlist(body$hourly$temperature_2m),
-    precip    = unlist(body$hourly$precipitation),
-    wind_kmh  = unlist(body$hourly$wind_speed_10m),
-    gust_kmh  = unlist(body$hourly$wind_gusts_10m)
+    ts       = as.POSIXct(unlist(body$hourly$time), tz = "Europe/Belgrade"),
+    temp     = unlist(body$hourly$temperature_2m),
+    precip   = unlist(body$hourly$precipitation),
+    wind_ms  = unlist(body$hourly$wind_speed_10m),
+    gust_ms  = unlist(body$hourly$wind_gusts_10m)
   )
 
   list(daily = daily, hourly = hourly)
@@ -117,7 +119,7 @@ night_precip <- hourly |>
   summarise(
     night_precip_mm = sum(precip, na.rm = TRUE),
     night_tmin      = min(temp, na.rm = TRUE),
-    night_max_gust  = max(gust_kmh, na.rm = TRUE),
+    night_max_gust  = max(gust_ms, na.rm = TRUE),
     night_hours_wet = sum(precip > 0.1, na.rm = TRUE),
     .groups = "drop"
   ) |>
@@ -205,8 +207,8 @@ if (nrow(race_rows) == 0) {
       "",
       sprintf("## %s", format(as.Date(d, origin = "1970-01-01"), "%a %d %b %Y")),
       "",
-      "| km | Waypoint | Elev m | Min °C | Max °C | Day rain mm (%) | **Night rain mm** | Night low °C | Wind / Gust km/h | Conditions |",
-      "|---:|----------|-------:|-------:|-------:|----------------:|------------------:|-------------:|-----------------:|------------|"
+      "| km | Waypoint | Elev m | Min °C | Max °C | Day rain mm (%) | **Night rain mm** | Night low °C | Wind / Gust m/s | Conditions |",
+      "|---:|----------|-------:|-------:|-------:|----------------:|------------------:|-------------:|----------------:|------------|"
     )
     for (i in seq_len(nrow(day))) {
       w <- day[i, ]
@@ -219,7 +221,7 @@ if (nrow(race_rows) == 0) {
         w$tmin, w$tmax,
         w$precip_mm, w$precip_pct,
         night_rain, night_low,
-        w$wind_kmh, w$gust_kmh,
+        w$wind_ms, w$gust_ms,
         wcode_emoji(w$wcode)
       ))
     }
@@ -234,15 +236,15 @@ if (nrow(race_rows) == 0) {
       "",
       "Worst-case picks per waypoint across the race window — these are the points to watch for hypothermia, snow/sleet, or thunderstorms.",
       "",
-      "| Waypoint | Elev m | Min temp °C | Max precip mm/day | Max gust km/h | Total night rain mm |",
-      "|----------|-------:|------------:|------------------:|--------------:|--------------------:|"
+      "| Waypoint | Elev m | Min temp °C | Max precip mm/day | Max gust m/s | Total night rain mm |",
+      "|----------|-------:|------------:|------------------:|-------------:|--------------------:|"
     )
     summary_high <- high |>
       group_by(name, km, ele) |>
       summarise(
         min_temp        = min(tmin, na.rm = TRUE),
         max_day_precip  = max(precip_mm, na.rm = TRUE),
-        max_gust        = max(gust_kmh, na.rm = TRUE),
+        max_gust        = max(gust_ms, na.rm = TRUE),
         total_night_rain = sum(night_precip_mm, na.rm = TRUE),
         .groups = "drop"
       ) |>
@@ -258,14 +260,14 @@ if (nrow(race_rows) == 0) {
 
   # ── Night-rain alert summary ────────────────────────────────────────────────
   night_alert <- race_rows |>
-    filter(!is.na(night_precip_mm), night_precip_mm >= 1) |>
+    filter(!is.na(night_precip_mm), night_precip_mm >= NIGHT_RAIN_ALERT_MM) |>
     arrange(date, km)
   if (nrow(night_alert) > 0) {
     md <- c(md,
       "",
-      "## 🌧️ Nights with measurable rain (≥1 mm)",
+      sprintf("## 🌧️ Nights with rain ≥ %.0f mm", NIGHT_RAIN_ALERT_MM),
       "",
-      "Worth knowing for bivvy strategy and sleep-system choice.",
+      sprintf("Worth knowing for bivvy strategy and sleep-system choice. Threshold tunable via `NIGHT_RAIN_ALERT_MM` in `weather_forecast.R`."),
       "",
       "| Night of | km | Waypoint | Night rain mm | Wet hours | Night low °C |",
       "|----------|---:|----------|--------------:|----------:|-------------:|"
