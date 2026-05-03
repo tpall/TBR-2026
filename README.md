@@ -16,6 +16,8 @@ Self-supported bikepacking race across the Dinaric Alps, organized by ASD Explor
 
 ## Live Weather Forecast
 
+[![Weather forecast](https://github.com/tpall/TBR-2026/actions/workflows/weather-forecast.yml/badge.svg)](https://github.com/tpall/TBR-2026/actions/workflows/weather-forecast.yml)
+
 **[→ weather_forecast.md](weather_forecast.md)** — auto-updated daily by GitHub Actions. Open-Meteo 16-day forecast for 14 waypoints along the route, including night-rain aggregation and high-altitude (>1000 m) summary. Climatology baseline in [`weather_outlook.md`](weather_outlook.md).
 
 ## Route Overview
