@@ -56,14 +56,16 @@ fetch_forecast <- function(lat, lon, ele) {
 
   body <- resp_body_json(resp)
 
-  # Open-Meteo returns 16 days for most metrics but only ~14 for
-  # precipitation_probability_max. Pad shorter columns with NA to align.
-  n_days <- length(body$daily$time)
+  # Open-Meteo can return ragged series — e.g. `precipitation_probability_max`
+  # only covers ~14 days vs 16 for other daily metrics, and `wind_gusts_10m`
+  # may end a few hours earlier than other hourly metrics. Pad shorter
+  # columns with NA so they align into a single tibble.
   pad_to <- function(x, n) {
     v <- unlist(lapply(x, function(z) if (is.null(z)) NA_real_ else z))
     if (length(v) < n) c(v, rep(NA_real_, n - length(v))) else v[seq_len(n)]
   }
 
+  n_days <- length(body$daily$time)
   daily <- tibble(
     date       = as.Date(unlist(body$daily$time)),
     tmin       = pad_to(body$daily$temperature_2m_min, n_days),
@@ -75,12 +77,13 @@ fetch_forecast <- function(lat, lon, ele) {
     wcode      = pad_to(body$daily$weather_code, n_days)
   )
 
+  n_hours <- length(body$hourly$time)
   hourly <- tibble(
     ts       = as.POSIXct(unlist(body$hourly$time), tz = "Europe/Belgrade"),
-    temp     = unlist(body$hourly$temperature_2m),
-    precip   = unlist(body$hourly$precipitation),
-    wind_ms  = unlist(body$hourly$wind_speed_10m),
-    gust_ms  = unlist(body$hourly$wind_gusts_10m)
+    temp     = pad_to(body$hourly$temperature_2m, n_hours),
+    precip   = pad_to(body$hourly$precipitation, n_hours),
+    wind_ms  = pad_to(body$hourly$wind_speed_10m, n_hours),
+    gust_ms  = pad_to(body$hourly$wind_gusts_10m, n_hours)
   )
 
   list(daily = daily, hourly = hourly)
