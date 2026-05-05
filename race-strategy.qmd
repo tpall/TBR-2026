@@ -1,6 +1,6 @@
 ---
 title: "TBR 2026 — Race Strategy"
-date: "2026-04-03"
+date: "2026-05-05"
 format:
   html:
     toc: true
@@ -167,8 +167,93 @@ resupply <- tribble(
     gap_km   = km - lag(km, default = 0),
     gap_h    = riding_h - lag(riding_h, default = 0)
   )
+
+# ── Recent Strava training (last 90 days) ────────────────────────────────────
+strava_path <- "/Users/taavi/Projects/strava/data/strava_data.json"
+strava <- jsonlite::fromJSON(strava_path, simplifyVector = FALSE)
+acts <- tibble(
+  date     = as.Date(map_chr(strava$activities, ~substr(.x$start_date, 1, 10))),
+  type     = map_chr(strava$activities, "type"),
+  km       = map_dbl(strava$activities, ~(.x$distance %||% 0) / 1000),
+  hours    = map_dbl(strava$activities, ~(.x$moving_time %||% 0) / 3600),
+  climb_m  = map_dbl(strava$activities, ~(.x$total_elevation_gain %||% 0)),
+  avg_w    = map_dbl(strava$activities, ~(.x$average_watts %||% NA_real_)),
+  np_w     = map_dbl(strava$activities, ~(.x$weighted_average_watts %||% NA_real_)),
+  hr       = map_dbl(strava$activities, ~(.x$average_heartrate %||% NA_real_)),
+  name     = map_chr(strava$activities, ~(.x$name %||% ""))
+) |> filter(type %in% c("Ride", "VirtualRide"))
+
+today      <- Sys.Date()
+acts_28    <- acts |> filter(date >= today - 28)
+acts_90    <- acts |> filter(date >= today - 90)
+long_rides <- acts_90 |> filter(hours >= 3) |> arrange(date)
+
+# TSS proxy with FTP
+tss_of <- function(np_w, hours) {
+  np <- ifelse(is.na(np_w), 0, np_w)
+  ifelse(np > 0, (hours * 3600 * np * (np / FTP)) / (FTP * 3600) * 100, 0)
+}
+acts_28 <- acts_28 |> mutate(tss = tss_of(np_w, hours))
+last28_summary <- list(
+  rides   = nrow(acts_28),
+  hours   = sum(acts_28$hours),
+  km      = sum(acts_28$km),
+  climb   = sum(acts_28$climb_m),
+  tss     = sum(acts_28$tss)
+)
 ```
 
+## Current fitness snapshot
+
+```{r fitness-snapshot}
+tibble(
+  ` ` = c("FTP", "Last 28-day rides", "Last 28-day volume", "Last 28-day climb",
+          "Last 28-day TSS proxy", "Long rides ≥3h (90d)", "Longest single ride (90d)",
+          "Days to start"),
+  `  ` = c(
+    sprintf("%d W (Half Monty ramp test, 2 Apr 2026)", FTP),
+    sprintf("%d", last28_summary$rides),
+    sprintf("%.1f h / %.0f km", last28_summary$hours, last28_summary$km),
+    sprintf("%.0f m", last28_summary$climb),
+    sprintf("%.0f", last28_summary$tss),
+    sprintf("%d", nrow(long_rides)),
+    {
+      lr <- long_rides |> arrange(desc(hours)) |> slice(1)
+      sprintf("%.1f h / %.0f km @ %.0f W avg, %.0f W NP — %s",
+              lr$hours, lr$km, lr$avg_w, lr$np_w, format(lr$date, "%d %b"))
+    },
+    sprintf("%d", as.integer(as.Date("2026-05-29") - today))
+  )
+) |> kable(col.names = NULL)
+```
+
+```{r long-rides-table}
+long_rides |>
+  arrange(desc(date)) |>
+  mutate(
+    Date  = format(date, "%d %b"),
+    Ride  = sprintf("%.1f h / %.0f km / %.0f m", hours, km, climb_m),
+    Power = ifelse(is.na(avg_w), "—", sprintf("%.0f W avg / %.0f W NP", avg_w, np_w)),
+    `% FTP (NP)` = ifelse(is.na(np_w), "—", sprintf("%.0f%%", np_w / FTP * 100)),
+    HR    = ifelse(is.na(hr), "—", sprintf("%.0f", hr)),
+    Name  = substr(name, 1, 30)
+  ) |>
+  select(Date, Ride, Power, `% FTP (NP)`, HR, Name) |>
+  kable() |>
+  kable_styling(full_width = FALSE, font_size = 12)
+```
+
+::: {.callout-note}
+## What this changes vs. the original strategy
+
+The original power targets were anchored on **Hydra Epic 2025** (132W Day 1 → 100-105W by Day 7-8). Two months of additional training has lifted the floor:
+
+- The **6.9 h / 157 km Apr 18 ride** at 156 W / 171 W NP shows **0.72 IF** is sustainable solo over a half-day — well above what was assumed.
+- The **Muhu sõõr brevet (1 May, 100 km in 4.4 h at 166 W / 178 W NP, IF 0.75)** is a recent race-pace data point in race kit, on race-style terrain (flat).
+- Multi-day decay (~20% by Day 7) is still expected — that is physiology, not training-state. But Days 1-3 power can be revised **up by ~15 W** vs. the original targets.
+
+Net effect: the day-by-day targets below now sit closer to what your current FTP supports, while preserving the Hydra-derived decay curve for the back half.
+:::
 ## The numbers
 
 ```{r overview-table}
@@ -245,8 +330,8 @@ tibble(
 
 - **Resist the start adrenaline.** Day 1 sets the tone for 8 more days. You know this from Hydra E1.
 - The opening 50 km is brutal: **1530m of climbing** at 5.9% average grade. This is the Slovenian karst. Don't try to keep up with anyone.
-- **Power cap: 130-140W average** (55-59% FTP). HR stays under 135.
-- At Hydra E1 you averaged 132W and HR 118 over 25.4h — that's the benchmark.
+- **Power cap: 145-155W average** (61-65% FTP). HR stays under 135.
+- Anchor: at Hydra E1 you averaged 132W/HR 118 over 25.4h. With a year more training (4.4h Muhu sõõr at 166W/HR 124, May 2026), 145-155W on Day 1 is the right ceiling — fit-but-not-foolish.
 - **Nutrition from the first hour**: 60-80g carbs/hr. Don't wait until hungry.
 - First resupply: Kozina (km 17), Slavnik mountain hut (km 28). Stock up in Fužine (km 164, village with shops).
 - **Sleep target: Stop by 00:30**, sleep until 06:30 (6h sleep on night 1 is worth it).
@@ -276,7 +361,7 @@ tibble(
 
 - Wake 06:30. Coffee, eat 500 kcal breakfast. Rolling by 07:00.
 - This is the **steepest average climbing day** (9.2% on uphills). Seated climbing, low cadence, Z2-Z3.
-- **Power target: 120-130W average**. You'll push 160-200W on climbs but average will drop on rough terrain.
+- **Power target: 130-140W average**. You'll push 170-210W on climbs but average will drop on rough terrain.
 - Key resupply: Oltari (km 245), Dom Zavižan mountain hut (km 260), Gospić (km 345, city — **big resupply**).
 - The Velebit section (km 200-300) is remote: **1200m+ climbing per 50km**, poor surfaces.
 
@@ -307,7 +392,7 @@ tibble(
 - **CP1 Mazin at ~km 451** — early in the day. Cutoff is Mon 1 Jun 17:00; you'll arrive **~30h ahead**.
 - After CP1: Gospić to Knin section. Resupply at Knin (km 537, city).
 - Fatigue is building. Stick to the routine: eat every 30 min, drink every 15 min.
-- **Power will naturally drop to 110-120W average** — this is normal. Don't chase Day 1 numbers.
+- **Power will naturally drop to 120-130W average** — this is normal. Don't chase Day 1 numbers.
 
 ::: {.callout-warning}
 ## Critical gap: Knin → Livno (127 km, 2058m climb, 10.5h)
@@ -334,7 +419,7 @@ tibble(
 
 - This is the **mental halfway point**. 4 days done, 4 to go. Expect a psychological dip.
 - Mostar (km 812) is the biggest city since Trieste — **major resupply opportunity**. Get a proper meal, fill everything.
-- Power target: 110-120W. Accept it. Hydra showed you drop 20% by mid-race.
+- Power target: 115-125W. Accept it. Hydra showed you drop 20% by mid-race.
 - **Watch for appetite crash** around Day 3-4. Force yourself to eat even if food sounds terrible. Switch to savory/salty foods if sweet becomes unbearable.
 
 ::: {.callout-tip}
@@ -395,7 +480,7 @@ tibble(
 - CP2 Kopilovi if not reached on Day 5 — cutoff is Thu 4 Jun 23:59, you have huge margin.
 - **Think of Hydra E7-E8**: you rode 147km/1696m on Day 7 and 330km/3156m on Day 8. You've been deeper than this.
 - Žabljak (km 1160) is a proper city in Montenegro — resupply here.
-- Power: accept 100-115W average. Your Hydra E7-E8 power was 100-105W. This is normal.
+- Power: accept 105-115W average. Your Hydra E7-E8 power was 100-105W; with the higher Day 1-3 base and a year more training, expect a few watts more on the deep-fatigue end too.
 
 ::: {.callout-warning}
 ## Critical gap: CP2 Kopilovi → Žabljak (100 km, 2335m climb, 8.9h)
@@ -436,12 +521,12 @@ tibble(
   Context = c("Flat / tailwind", "Rolling terrain", "Climbing (< 6%)",
               "Steep climbing (> 8%)", "Descending", "Race average target"),
   `Power (W)` = c(
-    sprintf("130-165 (55-70%% FTP)", FTP),
-    sprintf("120-150", FTP),
-    sprintf("165-200 (70-84%% FTP)", FTP),
-    sprintf("140-180 (60-76%% FTP)", FTP),
+    sprintf("145-170 (61-72%% FTP)", FTP),
+    sprintf("130-160", FTP),
+    sprintf("170-210 (72-89%% FTP)", FTP),
+    sprintf("150-185 (63-78%% FTP)", FTP),
     "Soft pedal / coast",
-    "100-130"
+    "115-145 (Days 1-3) → 105-115 (Days 5-7)"
   ),
   `HR cap` = c("<135", "<135", "<140", "<145", "N/A",
                "<130"),
@@ -451,7 +536,7 @@ tibble(
     "Don't surge — steady effort up",
     "Sit and spin, don't stand unless necessary",
     "Rest the legs, eat, drink",
-    "Your Hydra avg was 105-132W across 8 stages"
+    "Hydra avg 105-132W; Apr-May 2026 long rides 156-166W (improved base)"
   )
 ) |> kable() |> kable_styling(full_width = FALSE)
 ```
@@ -488,13 +573,13 @@ ggplot(hydra_stages, aes(day, avg_watts)) +
   theme_minimal(base_size = 12)
 ```
 
-**Implications for TBR:**
+**Implications for TBR (revised May 2026 with current fitness):**
 
-- Day 1: ~125-130W avg → realistic
-- Days 2-3: ~115-120W avg → settling in
-- Days 4-5: ~110-115W avg → fatigue accumulating
-- Days 6-7: ~100-110W avg → deep fatigue, this is expected
-- **Don't fight the decay.** It's physiology. Maintain effort, accept lower power.
+- Day 1: **~145-155W avg** — fitter base + adrenaline, but still capped to protect Days 4-7
+- Days 2-3: ~130-145W avg → settling in, hardest climbing days
+- Days 4-5: ~115-130W avg → fatigue accumulating, eat through it
+- Days 6-7: ~105-115W avg → deep fatigue, this is expected
+- **Don't fight the decay.** It's physiology. Maintain *effort*, accept lower *power*. The 20% Hydra decay still applies — the curve just shifts up because the starting point is higher.
 
 ## Nutrition plan
 
