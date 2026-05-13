@@ -5,8 +5,9 @@
 | Date | Time | Action |
 |---|---|---|
 | Wed 27 May | 12:45 | Land Ljubljana (LJU) — TLL→WAW→LJU |
-| Wed 27 May | ~14:30 | GoOpti shuttle LJU airport → Trieste (~2 h) |
-| Wed 27 May | evening | Check-in San Giacomo accommodation; **assemble bike** |
+| Wed 27 May | ~13:30 | Bus #28 LJU airport → Ljubljana central bus station (~45 min, €4.50) |
+| Wed 27 May | 17:10 | **FlixBus** LJU bus station → Trieste bus station (oversize luggage booked — bike box slightly over limit) |
+| Wed 27 May | ~19:30 | Arrive Trieste autostazione; transfer to San Giacomo accommodation; check in; **assemble bike** |
 | Thu 28 May | morning | Shakedown ride; final supplies; pack bike box for transport |
 | Thu 28 May | 13:00–17:00 | **Accreditation** — Oratorio "San Domenico Savio", Via Amerigo Vespucci 12 |
 | Thu 28 May | 18:00 | **Riders briefing** (same venue) |
@@ -211,7 +212,8 @@ Beyond the mandatory list above:
 - [ ] Save offline maps: Slovenia, Croatia, Bosnia, Montenegro (Komoot / OSM)
 - [ ] Save emergency contacts on phone
 - [ ] Install **Bolt** app (Slovenia + Montenegro)
-- [ ] Install **GoOpti** booking confirmation
+- [ ] Install **FlixBus** app + save ticket and oversize-luggage confirmation
+- [ ] Save fallback taxi numbers in phone in case FlixBus refuses the bike box at boarding: **BookTAXI Slovenia +386 40 473 798**, **Turanus +386 40 983 903** (both 24/7, Ljubljana-based, ~€120–180 for LJU→Trieste)
 - [ ] Charge all electronics (lights, GPS, power bank, phone)
 - [ ] Test new components on training ride (no race-day surprises)
 - [ ] Tubeless sealant fresh (refresh ≤2 weeks before)
@@ -222,7 +224,8 @@ Beyond the mandatory list above:
 
 ## Bookings to confirm
 
-- [ ] **GoOpti** — LJU airport → Trieste, Wed 27 May ~14:30 (declare bike box dimensions)
+- [x] **FlixBus** — LJU bus station → Trieste bus station, Wed 27 May **17:10** dep (special-luggage add-on booked; bike box 1360 × 854 × 297 mm slightly over their limit — hoping driver doesn't measure)
+- [ ] **Bus #28** (LJU airport → LJU bus station) — buy ticket on board, €4.50 cash
 - [ ] **Trieste accommodation** — 2 nights (27, 28 May), San Giacomo neighborhood, ask about bike box storage
 - [ ] **Risan accommodation** — finish night(s) through Sun 7 Jun, within 300 m of finish line
 - [ ] **Tivat accommodation** — Tue 9 Jun, walking distance from TIV airport
@@ -231,7 +234,8 @@ Beyond the mandatory list above:
 ## Useful links
 - TBR contact: hello@transbalkanrace.com
 - Slovenia rail: https://potniski.sz.si/en/trieste-trieste-airport-ronchi-udine/
-- GoOpti: https://www.goopti.com/
+- FlixBus: https://www.flixbus.com/
+- Ljubljana airport bus #28 (LPP): https://www.lju-airport.si/en/passengers/at-the-airport/getting-to-and-from-the-airport/
 
 ## Key addresses
 - **Accreditation/briefing**: Oratorio parrocchiale "San Domenico Savio", Via Amerigo Vespucci 12, 34144 Trieste
