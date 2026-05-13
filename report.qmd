@@ -16,161 +16,32 @@ execute:
 ---
 
 ```{r setup}
-library(tidyverse)
-library(xml2)
+source("tbr_plan.R")
 library(knitr)
 
-# ── Parameters ────────────────────────────────────────────────────────────────
+# ── Build daily plan ──────────────────────────────────────────────────────────
 
-GPX_FILE        <- "Trans Balkan Race 2026 __ Issue 1.GPX"
-SLEEP_HOUR      <- 2      # target sleep time (02:00)
-SLEEP_DURATION  <- 4.5    # minimum sleep hours; wake target = SLEEP_HOUR + SLEEP_DURATION = 06:30
-MAX_SLEEP       <- 6      # maximum sleep hours; earliest valid stop = 06:30 − 6h = 00:30
-MIN_RIDING_H    <- 10     # minimum riding hours per day (safety net against bridge days)
-MAX_DAILY_CLIMB <- 4000   # m elevation gain/day (soft: enforced only after earliest stop = 00:30)
-BASE_SPEED      <- 13.8   # km/h on flat terrain
-MAX_DESCENT     <- 32     # km/h cap on descents
-UPHILL_K        <- 0.08   # exponential penalty per % grade uphill
-DOWNHILL_K      <- 0.04   # exponential gain per % grade downhill
-
-race_start <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Paris")
-
-# ── Parse GPX ─────────────────────────────────────────────────────────────────
-
-gpx  <- read_xml(GPX_FILE)
-ns   <- c(g = "http://www.topografix.com/GPX/1/1")
-pts  <- xml_find_all(gpx, ".//g:trkpt", ns)
-
-track <- tibble(
-  lat = as.numeric(xml_attr(pts, "lat")),
-  lon = as.numeric(xml_attr(pts, "lon")),
-  ele = as.numeric(xml_text(xml_find_first(pts, "g:ele", ns)))
-) |>
-  mutate(ele = zoo::rollmedian(ele, k = 31, fill = NA, align = "center")) |>
-  filter(!is.na(ele))
-
-haversine <- function(lat1, lon1, lat2, lon2) {
-  r    <- 6371
-  phi1 <- lat1 * pi / 180; phi2 <- lat2 * pi / 180
-  a    <- sin(((lat2-lat1)*pi/180)/2)^2 +
-          cos(phi1)*cos(phi2)*sin(((lon2-lon1)*pi/180)/2)^2
-  2 * r * asin(sqrt(a))
-}
-
-segments <- track |>
-  mutate(
-    dist_km  = haversine(lag(lat), lag(lon), lat, lon),
-    ele_diff = ele - lag(ele),
-    grade    = pmax(pmin(ifelse(dist_km > 0, (ele_diff/(dist_km*1000))*100, 0), 30), -30)
-  ) |>
-  slice(-1) |>
-  filter(!is.na(dist_km), dist_km > 0) |>
-  mutate(
-    speed_kmh = case_when(
-      grade >= 0 ~ BASE_SPEED * exp(-UPHILL_K * grade),
-      grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)
-    ),
-    time_h   = dist_km / speed_kmh,
-    gain_m   = pmax(ele_diff, 0),
-    cum_dist = cumsum(dist_km),
-    cum_time = cumsum(time_h),
-    cum_gain = cumsum(gain_m)
-  )
+track    <- load_track(GPX_FILE)
+segments <- compute_segments(track)
+day_info <- simulate_days(segments, RACE_START)
 
 total_dist  <- sum(segments$dist_km)
 total_climb <- sum(segments$gain_m)
 total_time  <- sum(segments$time_h)
-
-# ── Day simulation ─────────────────────────────────────────────────────────────
-# Elevation cap is SOFT: only enforced after earliest valid stop (00:30).
-# This eliminates short bridge days and keeps daily distances equal.
-
-simulate_days <- function(segs, start_wall) {
-  WAKE_HOUR <- SLEEP_HOUR + SLEEP_DURATION   # 6.5 = 06:30
-  days_list <- list()
-  seg_idx   <- 1L
-  wall_time <- start_wall
-
-  while (seg_idx <= nrow(segs)) {
-    day_h0          <- as.numeric(difftime(wall_time, floor_date(wall_time, "day"), units = "hours"))
-    hrs_to_latest   <- (SLEEP_HOUR            - day_h0 + 24) %% 24
-    hrs_to_earliest <- (WAKE_HOUR - MAX_SLEEP - day_h0 + 24) %% 24
-    if (hrs_to_latest   == 0) hrs_to_latest   <- 24
-    if (hrs_to_earliest == 0) hrs_to_earliest <- 24
-
-    day_riding <- 0; day_climb <- 0; day_dist <- 0; day_start <- wall_time
-
-    while (seg_idx <= nrow(segs)) {
-      s <- segs[seg_idx, ]
-      if (day_riding + s$time_h > hrs_to_latest) break
-      if (day_climb  + s$gain_m > MAX_DAILY_CLIMB &&
-          day_riding >= MIN_RIDING_H              &&
-          day_riding >= hrs_to_earliest) break
-      day_riding <- day_riding + s$time_h
-      day_dist   <- day_dist   + s$dist_km
-      day_climb  <- day_climb  + s$gain_m
-      seg_idx    <- seg_idx + 1L
-    }
-
-    stop_wall <- day_start + as.difftime(day_riding, units = "hours")
-    next_0630 <- floor_date(stop_wall, "day") + as.difftime(WAKE_HOUR, units = "hours")
-    if (next_0630 <= stop_wall) next_0630 <- next_0630 + days(1)
-    sleep_h   <- max(SLEEP_DURATION, min(MAX_SLEEP,
-                   as.numeric(difftime(next_0630, stop_wall, units = "hours"))))
-
-    days_list[[length(days_list) + 1]] <- list(
-      day_start_wall = day_start,
-      day_end_wall   = stop_wall,
-      riding_h       = day_riding,
-      dist_km        = day_dist,
-      climb_m        = day_climb,
-      sleep_h        = sleep_h
-    )
-    wall_time <- stop_wall + as.difftime(sleep_h, units = "hours")
-    if (seg_idx > nrow(segs)) break
-  }
-
-  bind_rows(lapply(days_list, as_tibble)) |>
-    mutate(day = row_number(), cum_dist = cumsum(dist_km), cum_riding = cumsum(riding_h))
-}
-
-day_info <- simulate_days(segments, race_start)
-
 total_days  <- nrow(day_info) - 1 +
   (total_time - day_info$cum_riding[nrow(day_info) - 1]) / day_info$riding_h[nrow(day_info)]
 finish_wall <- day_info$day_start_wall[nrow(day_info)] +
   as.difftime(total_time - c(0, day_info$cum_riding)[nrow(day_info)], units = "hours")
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
-
-riding_time_at_dist <- function(dist_km) {
-  approx(segments$cum_dist, segments$cum_time, xout = dist_km, rule = 2)$y
-}
-
-wall_clock <- function(riding_time_h) {
-  day_idx   <- pmin(findInterval(riding_time_h, day_info$cum_riding) + 1L, nrow(day_info))
-  cum_start <- c(0, day_info$cum_riding)[day_idx]
-  day_info$day_start_wall[day_idx] + as.difftime(riding_time_h - cum_start, units = "hours")
-}
-
-# ── Checkpoints ────────────────────────────────────────────────────────────────
-
-checkpoints <- tribble(
-  ~name,             ~cum_dist_km,
-  "CP1 Mazin",              451,
-  "CP2 Kopilovi",          1060,
-  "Finish Risan",          1395
-)
-
-# ── Daily table data ───────────────────────────────────────────────────────────
+# ── Tables for the report ─────────────────────────────────────────────────────
 
 daily_tbl <- day_info |>
   rowwise() |>
   mutate(
     start_dist = if (day == 1) 0 else day_info$cum_dist[day - 1],
     cps = paste(
-      checkpoints$name[checkpoints$cum_dist_km > start_dist &
-                       checkpoints$cum_dist_km <= cum_dist],
+      CHECKPOINTS$name[CHECKPOINTS$cum_dist_km > start_dist &
+                       CHECKPOINTS$cum_dist_km <= cum_dist],
       collapse = ", "
     )
   ) |>
@@ -190,44 +61,7 @@ finish_row <- which(daily_tbl$cum_dist >= total_dist - 0.01)[1]
 if (is.na(finish_row)) finish_row <- nrow(daily_tbl)
 daily_tbl  <- daily_tbl[1:finish_row, ]
 
-# ── Resupply table data ────────────────────────────────────────────────────────
-
-resupply <- tribble(
-  ~location,              ~km,   ~type,         ~on_route,
-  "Kozina (SLO)",         16.6,  "Village",      TRUE,
-  "Slavnik (SLO)",        28.2,  "Mountain hut", TRUE,
-  "Dane (CRO)",           47.4,  "Fountain",     TRUE,
-  "Sveti Pavel (SLO)",    74.2,  "Fountain",     TRUE,
-  "Platak (CRO)",        141,    "Mountain hut", TRUE,
-  "Fužine (CRO)",        164,    "Village",      TRUE,
-  "Oltari (CRO)",        245,    "Fountain",     TRUE,
-  "Dom Zavižan (CRO)",   260,    "Mountain hut", TRUE,
-  "Gospić (CRO)",        345,    "City",         TRUE,
-  "CP1 Mazin (CRO)",     451,    "Checkpoint",   TRUE,
-  "Velika Popina (CRO)", 490,    "Fountain",     TRUE,
-  "Knin (CRO)",          537,    "City",         TRUE,
-  "Livno (BiH)",         664,    "Village",      TRUE,
-  "Šuica (BiH)",         701,    "Village",      TRUE,
-  "Mostar (BiH)",        812,    "City",         TRUE,
-  "Nevesinje (BiH)",     858,    "Village",      FALSE,
-  "Ulog (BiH)",          897,    "Village",      TRUE,
-  "Fountain (BiH)",      938,    "Fountain",     TRUE,
-  "Miljevina (BiH)",     990,    "Village",      FALSE,
-  "Popov Most (BiH)",   1034,    "Village",      TRUE,
-  "Brod (BiH)",         1055,    "Village",      TRUE,
-  "CP2 Kopilovi (BiH)", 1060,    "Checkpoint",   TRUE,
-  "Žabljak (MNE)",      1160,    "City",         TRUE,
-  "Njegovuđa (MNE)",    1170,    "Village",      TRUE,
-  "Kolašin (MNE)",      1228,    "City",         FALSE,
-  "Nikšić (MNE)",       1325,    "City",         TRUE,
-  "Risan / Finish",     1395,    "Finish",       TRUE
-) |>
-  mutate(
-    riding_h = map_dbl(km, riding_time_at_dist),
-    day_num  = findInterval(riding_h, day_info$cum_riding) + 1L,
-    arrival  = do.call(c, map(riding_h, wall_clock)),
-    gap_km   = km - lag(km, default = 0)
-  )
+resupply <- build_resupply(RESUPPLY, segments, day_info)
 ```
 
 ## Route overview
@@ -261,14 +95,16 @@ tibble(
 library(leaflet)
 
 # Thin track for performance (~every 10th point)
-thin_idx <- seq(1, nrow(track), by = 10)
+thin_idx   <- seq(1, nrow(track), by = 10)
 track_thin <- track[thin_idx, ]
 
 # Assign day to each thinned point via cumulative time
-cum_time_thin <- approx(segments$cum_dist,segments$cum_time,
-                        xout = cumsum(c(0, haversine(head(track_thin$lat,-1), head(track_thin$lon,-1),
-                                                     tail(track_thin$lat,-1), tail(track_thin$lon,-1)))),
-                        rule = 2)$y
+cum_dist_thin <- cumsum(c(0, haversine(
+  head(track_thin$lat, -1), head(track_thin$lon, -1),
+  tail(track_thin$lat, -1), tail(track_thin$lon, -1)
+)))
+cum_time_thin <- approx(segments$cum_dist, segments$cum_time,
+                        xout = cum_dist_thin, rule = 2)$y
 track_thin$day <- pmin(findInterval(cum_time_thin, day_info$cum_riding) + 1L, nrow(day_info))
 
 day_colors <- RColorBrewer::brewer.pal(max(track_thin$day), "Set2")
@@ -302,7 +138,6 @@ m <- leaflet(width = "100%") |>
   addLayersControl(baseGroups = c("OpenStreetMap", "Topo"),
                    options = layersControlOptions(collapsed = TRUE))
 
-# Add polylines per day
 for (d in sort(unique(track_thin$day))) {
   pts <- track_thin[track_thin$day == d, ]
   m <- m |> addPolylines(lng = pts$lon, lat = pts$lat,
@@ -311,7 +146,6 @@ for (d in sort(unique(track_thin$day))) {
                          label = paste("Day", d))
 }
 
-# Add resupply markers
 m <- m |>
   addAwesomeMarkers(
     lng = resupply_coords$lon, lat = resupply_coords$lat,
@@ -343,9 +177,9 @@ ggplot(elev_profile, aes(cum_dist, ele)) +
   geom_text(data = day_lines,
             aes(x = cum_dist, y = max(elev_profile$ele) * 0.95, label = label),
             size = 2.8, hjust = 1.08, colour = "grey30") +
-  geom_vline(data = checkpoints, aes(xintercept = cum_dist_km),
+  geom_vline(data = CHECKPOINTS, aes(xintercept = cum_dist_km),
              linetype = "dotted", colour = "firebrick", linewidth = 0.5) +
-  geom_text(data = checkpoints, aes(x = cum_dist_km, y = 80, label = name),
+  geom_text(data = CHECKPOINTS, aes(x = cum_dist_km, y = 80, label = name),
             size = 2.6, hjust = -0.05, colour = "firebrick") +
   scale_fill_brewer(palette = "Set2", name = "Day") +
   scale_x_continuous(breaks = seq(0, 1400, 100), minor_breaks = seq(0, 1400, 50)) +
@@ -388,18 +222,17 @@ resupply |>
   mutate(
     arrival_fmt = format(arrival, "%a %d %b %H:%M"),
     location    = if_else(!on_route, paste0(location, " *"), location),
-    gap_h       = riding_h - lag(riding_h, default = 0),
     gap_h_fmt   = sprintf("%.1f", gap_h),
     gap_km      = sprintf("%.0f", gap_km),
     km          = sprintf("%.0f", km)
   ) |>
   select(
-    Location             = location,
-    `km`                 = km,
-    `+km`                = gap_km,
-    `+h`                 = gap_h_fmt,
-    Type                 = type,
-    Day                  = day_num,
+    Location              = location,
+    `km`                  = km,
+    `+km`                 = gap_km,
+    `+h`                  = gap_h_fmt,
+    Type                  = type,
+    Day                   = day_num,
     `Est. arrival (CEST)` = arrival_fmt
   ) |>
   kable(align = c("l","r","r","r","l","c","l")) |>
@@ -429,10 +262,7 @@ where $g$ is gradient in %, $v_0 =$ `r BASE_SPEED` km/h, $k_u =$ `r UPHILL_K`, $
 
 ```{r speed-curve, fig.height=3, fig.width=6}
 tibble(grade = seq(-20, 20, 0.1)) |>
-  mutate(speed = case_when(
-    grade >= 0 ~ BASE_SPEED * exp(-UPHILL_K * grade),
-    grade <  0 ~ pmin(BASE_SPEED * exp(-DOWNHILL_K * grade), MAX_DESCENT)
-  )) |>
+  mutate(speed = speed_for_grade(grade)) |>
   ggplot(aes(grade, speed)) +
   geom_line(colour = "steelblue", linewidth = 1) +
   geom_vline(xintercept = 0, linetype = "dotted", colour = "grey50") +
