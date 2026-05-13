@@ -228,7 +228,7 @@ Beyond the mandatory list above:
 - [ ] **Bus #28** (LJU airport → LJU bus station) — buy ticket on board, €4.50 cash
 - [ ] **Trieste accommodation** — 2 nights (27, 28 May), San Giacomo neighborhood, ask about bike box storage
 - [ ] **Risan accommodation** — finish night(s) through Sun 7 Jun, within 300 m of finish line
-- [ ] **Tivat accommodation** — Tue 9 Jun, walking distance from TIV airport
+- [x] **Tivat accommodation** — **Studio Tamara Tivat**, Opština Tivat (9–10 Jun)
 - [ ] **airBaltic bike fee** — pre-booked on BT490 (Wed 10 Jun)
 
 ## Useful links
