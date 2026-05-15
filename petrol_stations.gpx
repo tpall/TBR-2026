@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="TBR-2026" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>TBR 2026 — petrol stations near the route</name>
+    <desc>83 fuel stations within 2000 m of the race route. Source: OpenStreetMap (amenity=fuel). Verify in the field — OSM coverage is good but not guaranteed complete.</desc>
+  </metadata>
+  <wpt lat="45.655366" lon="13.776241">
+    <name>Fuel 0 Trieste</name>
+    <desc>Tamoil · 1389 m off route (km 0) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.641832" lon="13.757225">
+    <name>Fuel 0 Trieste</name>
+    <desc>Q8 · 1676 m off route (km 0)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.638283" lon="13.765340">
+    <name>Fuel 0 Trieste</name>
+    <desc>Q8 · 1157 m off route (km 0)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.639320" lon="13.760368">
+    <name>Fuel 0 Trieste</name>
+    <desc>IP · 1480 m off route (km 0)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.639236" lon="13.773786">
+    <name>Fuel 0 Trieste</name>
+    <desc>Esso · 532 m off route (km 0)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.639763" lon="13.777209">
+    <name>Fuel 0 Trieste</name>
+    <desc>Eni · 273 m off route (km 0)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.640027" lon="13.788918">
+    <name>Fuel 1 Trieste</name>
+    <desc>Esso · 515 m off route (km 1)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.628598" lon="13.781505">
+    <name>Fuel 1 Trieste</name>
+    <desc>Eni · 838 m off route (km 1) · hours: unknown</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.627107" lon="13.794228">
+    <name>Fuel 2 Trieste</name>
+    <desc>Eni · 872 m off route (km 2)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.626744" lon="13.794915">
+    <name>Fuel 2 Trieste</name>
+    <desc>IP · 909 m off route (km 2)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.625368" lon="13.795326">
+    <name>Fuel 3 Trieste</name>
+    <desc>Esso · 979 m off route (km 3)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.637917" lon="13.814983">
+    <name>Fuel 4 Trieste</name>
+    <desc>Shell · 814 m off route (km 4)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.638337" lon="13.815622">
+    <name>Fuel 4 Trieste</name>
+    <desc>Esso · 858 m off route (km 4)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.617899" lon="13.815026">
+    <name>Fuel 4 Trieste</name>
+    <desc>Esso · 1273 m off route (km 4)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.612951" lon="13.825606">
+    <name>Fuel 4 Trieste</name>
+    <desc>Q8 · 1824 m off route (km 4) · hours: Mo-Fr 07:00-19:00, Sa 08:00-12:00; PH off</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.618556" lon="13.818500">
+    <name>Fuel 4 Trieste</name>
+    <desc>Eni · 1151 m off route (km 4)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.611601" lon="13.819363">
+    <name>Fuel 4 Trieste</name>
+    <desc>Esso · 1919 m off route (km 4)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.620322" lon="13.907001">
+    <name>Fuel 14 Slavnik karst</name>
+    <desc>MOL · 217 m off route (km 14) · hours: Oct-Mar: Sa-Th 07:00-21:00; Oct-Mar: Fr 07:00-22:00; Apr-May: Su-Th 07:00-21:00; Apr-May: Fr-Sa 07:00-22:00; Jun-Sep: Mo-Su 06:00-22:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.618869" lon="13.910148">
+    <name>Fuel 15 Slavnik karst</name>
+    <desc>INA · 188 m off route (km 15) · hours: Mo-Sa 07:00-19:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.604945" lon="13.928711">
+    <name>Fuel 17 Slavnik karst</name>
+    <desc>Petrol · 473 m off route (km 17) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.605984" lon="13.931002">
+    <name>Fuel 17 Slavnik karst</name>
+    <desc>fuel station · 311 m off route (km 17)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.609057" lon="13.933657">
+    <name>Fuel 17 Slavnik karst</name>
+    <desc>Shell · 28 m off route (km 17) · hours: Mo-Sa 06:00-22:00; PH,Su 08:00-20:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.608300" lon="13.935138">
+    <name>Fuel 17 Slavnik karst</name>
+    <desc>MOL · 98 m off route (km 17) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.604712" lon="13.949990">
+    <name>Fuel 18 Slavnik karst</name>
+    <desc>Petrol · 830 m off route (km 18)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.600998" lon="13.933694">
+    <name>Fuel 19 Slavnik karst</name>
+    <desc>INA · 244 m off route (km 19) · hours: Mo-Fr 08:00-11.00,11.30-16:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.575332" lon="14.232246">
+    <name>Fuel 87 Platak mountain</name>
+    <desc>Petrol · 1772 m off route (km 87) · hours: Mo-Su 06:00-22:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.576117" lon="14.230116">
+    <name>Fuel 87 Platak mountain</name>
+    <desc>Hofer · 1618 m off route (km 87)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.326822" lon="14.656877">
+    <name>Fuel 157 Platak mountain</name>
+    <desc>INA · 196 m off route (km 157) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="45.305161" lon="14.713306">
+    <name>Fuel 164 Platak mountain</name>
+    <desc>INA · 71 m off route (km 164) · hours: Mo-Su 07:00-19:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="44.554590" lon="15.380083">
+    <name>Fuel 343 Gospić</name>
+    <desc>INA · 1470 m off route (km 343) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="44.533288" lon="15.397400">
+    <name>Fuel 345 Gospić</name>
+    <desc>INA · 62 m off route (km 345) · hours: Mo-Sa 07:00-19:00; Su 07:00-13:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="44.030211" lon="16.191673">
+    <name>Fuel 535 Knin</name>
+    <desc>Lukoil · 1376 m off route (km 535)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="44.040151" lon="16.203005">
+    <name>Fuel 535 Knin</name>
+    <desc>INA · 30 m off route (km 535) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.798793" lon="16.939367">
+    <name>Fuel 655 Livno</name>
+    <desc>B&amp;M · 1075 m off route (km 655)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.823352" lon="16.981560">
+    <name>Fuel 660 Livno</name>
+    <desc>Auro · 66 m off route (km 660)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.823252" lon="16.995473">
+    <name>Fuel 661 Livno</name>
+    <desc>TiOIL · 24 m off route (km 661) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.821568" lon="16.996798">
+    <name>Fuel 661 Livno</name>
+    <desc>B&amp;M · 213 m off route (km 661) · hours: Mo-Su,PH 00:00-00:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.817509" lon="17.001072">
+    <name>Fuel 661 Livno</name>
+    <desc>Pavić Petrol · 738 m off route (km 661) · hours: 00:00-24:00</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.839904" lon="16.973381">
+    <name>Fuel 664 Livno</name>
+    <desc>Benzinska postaja B&amp;M · 409 m off route (km 664)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.842548" lon="16.967984">
+    <name>Fuel 664 Livno</name>
+    <desc>fuel station · 119 m off route (km 664)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.839403" lon="17.174699">
+    <name>Fuel 698 Livno</name>
+    <desc>Nestro · 1102 m off route (km 698)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.841891" lon="17.173480">
+    <name>Fuel 698 Livno</name>
+    <desc>BTG Šujica · 1301 m off route (km 698)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.361272" lon="17.803648">
+    <name>Fuel 803 Mostar</name>
+    <desc>autoSpa (Čule Promet br. 1) · 1802 m off route (km 803)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.347671" lon="17.786750">
+    <name>Fuel 806 Mostar</name>
+    <desc>Tankoil · 30 m off route (km 806)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.347589" lon="17.786671">
+    <name>Fuel 806 Mostar</name>
+    <desc>Tankoil · 41 m off route (km 806)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.336540" lon="17.771841">
+    <name>Fuel 806 Mostar</name>
+    <desc>Petrol · 1753 m off route (km 806)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.352051" lon="17.793853">
+    <name>Fuel 807 Mostar</name>
+    <desc>Energy Commerce · 671 m off route (km 807)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.351178" lon="17.798532">
+    <name>Fuel 807 Mostar</name>
+    <desc>OIL AC · 812 m off route (km 807)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.341338" lon="17.798423">
+    <name>Fuel 808 Mostar</name>
+    <desc>Lamina · 142 m off route (km 808)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.350578" lon="17.805171">
+    <name>Fuel 808 Mostar</name>
+    <desc>Arena Oil · 999 m off route (km 808)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.347139" lon="17.813549">
+    <name>Fuel 808 Mostar</name>
+    <desc>HoldINA · 1048 m off route (km 808)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.339393" lon="17.808654">
+    <name>Fuel 809 Mostar</name>
+    <desc>OIL! · 221 m off route (km 809)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.326050" lon="17.822370">
+    <name>Fuel 811 Mostar</name>
+    <desc>Gazprom · 26 m off route (km 811) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.326302" lon="17.825120">
+    <name>Fuel 811 Mostar</name>
+    <desc>Hifa · 189 m off route (km 811)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.313717" lon="17.829263">
+    <name>Fuel 812 Mostar</name>
+    <desc>EP · 27 m off route (km 812)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.313774" lon="17.830078">
+    <name>Fuel 812 Mostar</name>
+    <desc>EP · 39 m off route (km 812)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.310650" lon="17.831271">
+    <name>Fuel 813 Mostar</name>
+    <desc>Hercegovinapromet Oil · 38 m off route (km 813)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.307848" lon="17.823356">
+    <name>Fuel 813 Mostar</name>
+    <desc>Hifa Petrol · 662 m off route (km 813)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.308005" lon="17.822404">
+    <name>Fuel 813 Mostar</name>
+    <desc>Petrol · 734 m off route (km 813)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.305599" lon="17.832384">
+    <name>Fuel 813 Mostar</name>
+    <desc>Oil Tojaga · 52 m off route (km 813)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.302186" lon="17.828940">
+    <name>Fuel 813 Mostar</name>
+    <desc>Gazprom · 324 m off route (km 813)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.290583" lon="17.847181">
+    <name>Fuel 815 Mostar</name>
+    <desc>fuel station · 52 m off route (km 815)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.290561" lon="17.847162">
+    <name>Fuel 815 Mostar</name>
+    <desc>Oil Tojaga · 52 m off route (km 815)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.290613" lon="17.847322">
+    <name>Fuel 815 Mostar</name>
+    <desc>Oil Tojaga · 60 m off route (km 815)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.282180" lon="17.835123">
+    <name>Fuel 816 Mostar</name>
+    <desc>Oil AC · 1245 m off route (km 816)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.274037" lon="17.834573">
+    <name>Fuel 817 Mostar</name>
+    <desc>autoSpa (Čule Promet br. 2) · 1662 m off route (km 817)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.256210" lon="18.117060">
+    <name>Fuel 853 Mostar</name>
+    <desc>Nestro Petrol · 1933 m off route (km 853)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.255986" lon="18.118150">
+    <name>Fuel 853 Mostar</name>
+    <desc>Z&amp;S · 1864 m off route (km 853)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.509992" lon="18.644033">
+    <name>Fuel 985 CP2 Kopilovi</name>
+    <desc>Nestro Petrol · 705 m off route (km 985)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.486235" lon="18.743777">
+    <name>Fuel 1049 CP2 Kopilovi</name>
+    <desc>fuel station · 35 m off route (km 1049)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.495807" lon="18.733142">
+    <name>Fuel 1049 CP2 Kopilovi</name>
+    <desc>Gas Station · 1399 m off route (km 1049)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="43.151986" lon="19.129348">
+    <name>Fuel 1153 Žabljak</name>
+    <desc>EKO · 94 m off route (km 1153)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.775865" lon="18.970669">
+    <name>Fuel 1317 Nikšić</name>
+    <desc>fuel station · 131 m off route (km 1317)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.774731" lon="18.953136">
+    <name>Fuel 1318 Nikšić</name>
+    <desc>Vjenniko petrol · 233 m off route (km 1318)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.766177" lon="18.951656">
+    <name>Fuel 1318 Nikšić</name>
+    <desc>Petrol · 691 m off route (km 1318) · hours: 24/7</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.767263" lon="18.950099">
+    <name>Fuel 1318 Nikšić</name>
+    <desc>fuel station · 569 m off route (km 1318)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.768610" lon="18.949157">
+    <name>Fuel 1318 Nikšić</name>
+    <desc>Еко · 436 m off route (km 1318)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.759772" lon="18.939011">
+    <name>Fuel 1319 Nikšić</name>
+    <desc>Hifa oil · 1613 m off route (km 1319)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.780278" lon="18.940619">
+    <name>Fuel 1320 Nikšić</name>
+    <desc>Eko Nikšić · 27 m off route (km 1320)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.780382" lon="18.940546">
+    <name>Fuel 1320 Nikšić</name>
+    <desc>fuel station · 38 m off route (km 1320)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.782438" lon="18.933319">
+    <name>Fuel 1320 Nikšić</name>
+    <desc>fuel station · 47 m off route (km 1320)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.782484" lon="18.933346">
+    <name>Fuel 1320 Nikšić</name>
+    <desc>fuel station · 43 m off route (km 1320)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+  <wpt lat="42.510812" lon="18.696426">
+    <name>Fuel 1388 Risan</name>
+    <desc>EKO · 148 m off route (km 1388)</desc>
+    <sym>Gas Station</sym>
+    <type>Fuel</type>
+  </wpt>
+</gpx>

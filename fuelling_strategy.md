@@ -402,7 +402,7 @@ Larger petrol stations on through-roads answer almost every "shop is shut" probl
 - They stock the ultra staples: pastries, nuts, chocolate, chips, biscuits, cola, energy drinks — often coffee and hot food too.
 - **Restaurants and konobe** are hospitality, not retail: they open later than shops and on Sundays, covering the evening hot meal and the Sunday gap.
 
-**Prep task:** before the race, mark the petrol stations near **Gospić, Knin, Mostar, Žabljak and Nikšić** on your offline maps / GPS, so you're not hunting for one while exhausted.
+**Prep task — done:** [`petrol_stations.gpx`](petrol_stations.gpx) holds all **83 fuel stations within 2 km of the route** (from OpenStreetMap), as GPS waypoints named by route-km and nearest town, with opening hours where OSM has them. Copy it to the Garmin's `Garmin/NewFiles` folder, or import it into OsmAnd / Organic Maps as favourites. Verify against the map in the field — OSM coverage is good but opening-hours tags are patchy. Note: an **INA station 30 m off route at Knin is tagged 24/7** — the Day-3 Sunday resupply.
 
 ### Day 3 (Sunday 31 May) — plan around it
 

@@ -11,6 +11,8 @@ docs/
 !race-strategy.html
 *asice
 *GPX
+# committed exception: petrol-station waypoints for GPS / offline maps
+!petrol_stations.gpx
 *fit
 *zwo
 node_modules/
