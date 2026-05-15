@@ -129,7 +129,9 @@ night_precip <- hourly |>
     night_precip_mm = sum(precip, na.rm = TRUE),
     night_tmin      = min(temp, na.rm = TRUE),
     night_max_gust  = max(gust_ms, na.rm = TRUE),
-    night_hours_wet = sum(precip > 0.1, na.rm = TRUE),
+    # any measurable precip — 0.1 mm is Open-Meteo's smallest non-zero value,
+    # so a strict > 0.1 would report "0h wet" for a night that still has mm.
+    night_hours_wet = sum(precip > 0, na.rm = TRUE),
     .groups = "drop"
   ) |>
   rename(date = night_date)
