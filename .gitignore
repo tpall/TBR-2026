@@ -6,6 +6,8 @@ CLAUDE.md
 docs/
 *pdf
 *html
+# committed exception: static race-plan report, read offline on the phone
+!report.html
 *asice
 *GPX
 *fit

@@ -91,39 +91,24 @@ tibble(
 
 ## Route map
 
-```{r route-map}
-library(leaflet)
+```{r route-map, fig.width=9, fig.height=7.5}
+# Static route map — country outlines from {maps}, no tile server, so the
+# image embeds into the report and renders fully offline. (The previous
+# leaflet map needed live OpenStreetMap/OpenTopoMap tiles.)
 
 # Thin track for performance (~every 10th point)
 thin_idx   <- seq(1, nrow(track), by = 10)
 track_thin <- track[thin_idx, ]
 
-# Assign day to each thinned point via cumulative time
+# Assign a race day to each thinned point via cumulative riding time
 cum_dist_thin <- cumsum(c(0, haversine(
   head(track_thin$lat, -1), head(track_thin$lon, -1),
   tail(track_thin$lat, -1), tail(track_thin$lon, -1)
 )))
 cum_time_thin <- approx(segments$cum_dist, segments$cum_time,
                         xout = cum_dist_thin, rule = 2)$y
-track_thin$day <- pmin(findInterval(cum_time_thin, day_info$cum_riding) + 1L, nrow(day_info))
-
-day_colors <- RColorBrewer::brewer.pal(max(track_thin$day), "Set2")
-
-# Resupply markers
-resupply_icons <- awesomeIcons(
-  icon = case_when(
-    resupply$type == "Checkpoint" ~ "flag",
-    resupply$type == "City"       ~ "home",
-    resupply$type == "Finish"     ~ "flag-checkered",
-    TRUE                          ~ "tint"
-  ),
-  markerColor = case_when(
-    resupply$type == "Checkpoint" ~ "orange",
-    resupply$type == "City"       ~ "blue",
-    resupply$type == "Finish"     ~ "green",
-    TRUE                          ~ "lightblue"
-  ),
-  library = "fa"
+track_thin$day <- factor(
+  pmin(findInterval(cum_time_thin, day_info$cum_riding) + 1L, nrow(day_info))
 )
 
 # Resupply lat/lon from nearest track point
@@ -131,32 +116,54 @@ resupply_coords <- map_dfr(resupply$km, function(d) {
   idx <- which.min(abs(segments$cum_dist - d))
   tibble(lat = segments$lat[idx], lon = segments$lon[idx])
 })
+resupply_pts <- bind_cols(resupply, resupply_coords)
 
-m <- leaflet(width = "100%") |>
-  addProviderTiles(providers$OpenStreetMap) |>
-  addProviderTiles(providers$OpenTopoMap, group = "Topo") |>
-  addLayersControl(baseGroups = c("OpenStreetMap", "Topo"),
-                   options = layersControlOptions(collapsed = TRUE))
+# Country outlines + a window padded around the route's bounding box
+borders <- map_data("world", region = c(
+  "Italy", "Slovenia", "Croatia", "Bosnia and Herzegovina",
+  "Montenegro", "Serbia", "Albania", "Kosovo", "Hungary", "Austria"
+))
+lon_rng <- range(track_thin$lon) + c(-0.5, 0.5)
+lat_rng <- range(track_thin$lat) + c(-0.3, 0.3)
 
-for (d in sort(unique(track_thin$day))) {
-  pts <- track_thin[track_thin$day == d, ]
-  m <- m |> addPolylines(lng = pts$lon, lat = pts$lat,
-                         color = day_colors[d], weight = 3, opacity = 0.8,
-                         group = paste("Day", d),
-                         label = paste("Day", d))
-}
+type_fill <- c(
+  Checkpoint     = "#d7263d", Finish   = "#2a9d8f",
+  City           = "#1d3557", Fountain = "#48cae4",
+  `Mountain hut` = "#9d4edd", Village  = "#adb5bd"
+)
 
-m <- m |>
-  addAwesomeMarkers(
-    lng = resupply_coords$lon, lat = resupply_coords$lat,
-    icon = resupply_icons,
-    label = sprintf("%s (km %.0f, Day %d)", resupply$location, resupply$km, resupply$day_num),
-    popup = sprintf("<b>%s</b><br>km %.0f · %s<br>Day %d · %s",
-                    resupply$location, resupply$km, resupply$type,
-                    resupply$day_num, format(resupply$arrival, "%a %d %b %H:%M"))
-  )
+# Label the significant stops; fountains/villages/huts stay as plain markers
+label_pts <- resupply_pts |> filter(type %in% c("Checkpoint", "City", "Finish"))
 
-m
+ggplot() +
+  geom_polygon(data = borders, aes(long, lat, group = group),
+               fill = "grey94", colour = "grey75", linewidth = 0.3) +
+  geom_path(data = track_thin, aes(lon, lat, colour = day, group = 1),
+            linewidth = 1.1, lineend = "round") +
+  geom_point(data = resupply_pts, aes(lon, lat, fill = type),
+             shape = 21, size = 2.6, stroke = 0.5, colour = "grey20") +
+  ggrepel::geom_text_repel(
+    data = label_pts, aes(lon, lat, label = location),
+    size = 2.7, fontface = "bold", colour = "grey15",
+    min.segment.length = 0, segment.size = 0.3,
+    box.padding = 0.4, max.overlaps = Inf, seed = 1
+  ) +
+  scale_colour_brewer(palette = "Set2", name = "Race day") +
+  scale_fill_manual(values = type_fill, name = "Resupply",
+                    breaks = names(type_fill)) +
+  coord_quickmap(xlim = lon_rng, ylim = lat_rng) +
+  labs(x = NULL, y = NULL,
+       title = "Route — Trieste to Risan",
+       subtitle = "Track coloured by race day · markers = resupply points") +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.background = element_rect(fill = "#eaf1f6", colour = NA),
+    panel.grid       = element_line(colour = "grey88", linewidth = 0.2),
+    axis.text        = element_text(size = 7, colour = "grey55"),
+    legend.position  = "right",
+    plot.title       = element_text(face = "bold")
+  ) +
+  guides(colour = guide_legend(override.aes = list(linewidth = 2)))
 ```
 
 ## Elevation profile
