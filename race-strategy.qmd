@@ -1,6 +1,6 @@
 ---
 title: "TBR 2026 — Race Strategy"
-date: "2026-05-15"
+date: "`r Sys.Date()`"
 format:
   html:
     toc: true
