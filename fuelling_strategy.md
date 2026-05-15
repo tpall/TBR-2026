@@ -45,11 +45,11 @@
 | Country | City shops | Village shops | Petrol stations | Mountain huts |
 |---|---|---|---|---|
 | **Slovenia** | 07:00–21:00 | 07:00–19:00 | 24h (rare) | 08:00–20:00 (seasonal) |
-| **Croatia** | 07:00–21:00 (Sun 08:00–15:00) | 06:00–20:00 (Sun limited) | Many 24h | Irregular, daylight |
+| **Croatia** | 07:00–21:00 · **Sun closed (law)** | 06:00–20:00 · **Sun closed (law)** | Many 24h · **Sun-exempt** | Irregular, daylight |
 | **Bosnia-Herzegovina** | 07:00–22:00 | 06:00–20:00 (variable) | Some 24h | — |
 | **Montenegro** | 07:00–22:00 | 07:00–20:00 | Some 24h | 08:00–20:00 |
 
-> **Critical:** Sunday (Day 3, 31 May) — Croatian village shops may be closed or have reduced hours. Plan accordingly. Knin (city, km 537) should have open shops even on Sunday.
+> **Critical:** Croatia closes retail on Sundays *by law* — shops may open on only 16 chosen Sundays a year, so don't count on it. Day 3 (Sun 31 May) runs entirely on a Sunday: supermarkets **and** village shops shut. Knin resupply that day = the **petrol-station shop** (legally Sunday-exempt, often 24 h) **+ a restaurant** — not a supermarket. See **Off-hours & resupply risk** below.
 
 ### What's typically available at each type
 
@@ -87,7 +87,7 @@ Start with full pockets + frame bag food from Trieste (pre-race shopping).
 - 2 bags of trail mix / nuts (600 kcal)
 - 4–6 gels (400–600 kcal)
 - Bread roll + cheese/salami wrap (500 kcal)
-- 2× 750 ml bottles + electrolyte tabs
+- 2× 750 ml bottles + 2 L vest bladder, electrolyte tabs (3.5 L total)
 - **Total carried: ~3,500–4,200 kcal** (enough for the full day, stops are bonus)
 
 **Day 1 calorie ledger:**
@@ -108,7 +108,7 @@ Start with full pockets + frame bag food from Trieste (pre-race shopping).
 |---|---|---|---|---|---|---|---|
 | 1 | Wake → Oltari | 245 | 66 | 5.7 | 12:14 | Water only | **Long morning leg.** Carry breakfast + morning food from sleep. Fountain at Oltari |
 | 2 | Oltari → Dom Zavižan | 260 | 15 | 1.8 | 14:03 | Yes (hut) | **KEY MEAL STOP.** Hot meal at mountain hut. Stew, bread, soup. Aim 800 kcal. Refill water |
-| 3 | Zavižan → Gospić | 345 | 85 | 6.4 | 20:30 | **Yes (city)** | **MAJOR RESUPPLY.** Gospić is a proper city. Supermarket, bakeries. Buy hot ready meal (ćevapi, pizza, burek) + restock pockets. Spend 20–30 min eating |
+| 3 | Zavižan → Gospić | 345 | 85 | 6.4 | 20:30 | ⚠️ **Marginal** | **MAJOR RESUPPLY.** Saturday — city shops close ~21:00 and the 20:30 arrival is best-case (you'll likely be later). If the supermarket is open, sweep it; if shut, go straight to a 24 h petrol station + a restaurant for the hot meal — don't burn time on a closed shop |
 | 4 | Gospić → Sleep (~409) | 409 | 64 | 5.2 | ~01:59 | No | Riding on carried food into the night |
 
 **Carry from Gospić (critical resupply):**
@@ -134,13 +134,13 @@ Start with full pockets + frame bag food from Trieste (pre-race shopping).
 **Riding: 19.4 h (06:30–01:55) · 237 km · 3713 m climbing · CP1 MAZIN**
 **Target intake: ~6,600 kcal**
 
-⚠️ **SUNDAY — reduced shop hours in Croatia.** Plan for reduced availability in villages.
+⚠️ **SUNDAY — Croatian retail closed by law.** Supermarkets and village shops shut all day. Resupply via Knin's petrol-station shop (Sunday-exempt) + restaurants. Fountains and CP1 still give water.
 
 | Leg | From → To | km | Gap | Riding h | Arrival | Shop open? | Action |
 |---|---|---|---|---|---|---|---|
 | 1 | Wake → CP1 Mazin | 451 | 42 | 3.3 | 09:46 | CP (water) | Check in. Water. Eat carried food |
 | 2 | CP1 → Velika Popina | 490 | 39 | 3.2 | 12:55 | Water only | Fountain. Snack from carried |
-| 3 | V. Popina → Knin | 537 | 47 | 3.7 | 16:38 | **Yes (city)** | **MAJOR RESUPPLY.** City — shops open even Sunday. Hot meal + full restock. Stock up heavy — next city is Livno (127 km, 10.6h away, arrives early Mon AM) |
+| 3 | V. Popina → Knin | 537 | 47 | 3.7 | 16:38 | ⚠️ **Petrol + restaurant** | **MAJOR RESUPPLY (Sunday).** Supermarkets shut by law — use the 24 h petrol-station shop for packaged food (nuts, chocolate, chips, biscuits, cola) + a restaurant for the hot meal. Stock heavy: next resupply Livno is 127 km / 10.6 h away |
 | 4 | Knin → Sleep (~646) | 646 | 109 | 8.7 | ~01:55 | No | Long evening/night leg. Riding on carried food |
 
 **Carry from Knin (heavy resupply for long gap):**
@@ -299,8 +299,8 @@ These are the stops where you **must** buy food. Missing any of these creates a 
 |---|---|---|---|---|---|---|
 | **CRITICAL** | Trieste (pre-race) | 0 | 1 | 09:00 | Full load for Day 1 | 3,500–4,200 |
 | HIGH | Dom Zavižan hut | 260 | 2 | 14:03 | Hot meal | 800 (eaten) |
-| **CRITICAL** | Gospić | 345 | 2 | 20:30 | Major resupply + hot meal | 3,000 |
-| **CRITICAL** | Knin | 537 | 3 | 16:38 | Heavy resupply (long gap ahead) | 3,500–4,000 |
+| **CRITICAL** | Gospić | 345 | 2 | 20:30 | Major resupply + hot meal — *Sat, shop closes ~21:00; petrol/restaurant if later* | 3,000 |
+| **CRITICAL** | Knin | 537 | 3 | 16:38 | Heavy resupply for the long gap — *Sunday: petrol-station shop + restaurant, no supermarket* | 3,500–4,000 |
 | HIGH | Livno | 664 | 4 | 07:48 | Morning bakery resupply | 600 |
 | **CRITICAL** | Mostar | 812 | 4 | 19:42 | Heaviest resupply (food desert ahead) | 4,500–5,000 |
 | **CRITICAL** | Žabljak | 1160 | 6 | 12:21 | Major resupply + hot meal | 3,500–4,000 |
@@ -333,17 +333,28 @@ For the Mostar heavy load (food desert): stuff an extra 500g into saddle bag = ~
 
 ## Hydration plan
 
-| Segment type | Target | Notes |
-|---|---|---|
-| Normal riding | 500–750 ml/h | 2 bottles = 90–120 min range |
-| Hot sections (lowlands, coast) | 750–1000 ml/h | May/Jun Balkans can hit 30°C+ |
-| Mountain sections | 500 ml/h | Cooler, but fountains may be far apart |
-| Night | 400–500 ml/h | Lower sweat rate |
+**Carry capacity: 3.5 L** — 2 L hydration-vest bladder + 2× 750 ml frame bottles.
 
-**Water carry:** 2× 750 ml bottles = 1.5 L. Top up at every fountain and stop.
-**Longest waterless gaps:** Sveti Pavel → Platak (67 km, 5.8h) — carry extra 1L if hot.
+| Segment type | Target | 3.5 L lasts | Notes |
+|---|---|---|---|
+| Normal riding | 500–750 ml/h | ~5–7 h | Comfortable between fountains |
+| Hot sections (lowlands, coast, Dinara) | 750–1000 ml/h | ~3.5–4.5 h | May/Jun Balkans hit 30–40°C on exposed sections |
+| Mountain sections | 500 ml/h | ~7 h | Cooler, but fountains can be far apart |
+| Night | 400–500 ml/h | ~7–8 h | Lower sweat rate — ride the long dry legs after dark when you can |
 
-**Electrolytes:** 1 tab per 750 ml bottle. Carry 30+ tabs for the race (e.g., SiS GO, Nuun, Precision Hydration).
+**Waterless gaps vs. capacity:**
+- **Sveti Pavel → Platak** (67 km / 5.8 h): covered by 3.5 L except in full heat.
+- **Knin → Livno** (127 km / 10.6 h, Dinara danger zone — no detours): too long for one fill in daytime heat, *but* the model puts this leg overnight (Knin ~Sun evening → Livno ~Mon morning) — cool air, low sweat rate, so 3.5 L stretches. Still top up at any village tap en route.
+- Fountains and checkpoints (Dane, Sveti Pavel, Oltari, CP1, Velika Popina, Fountain BiH, CP2) plus town taps keep most other gaps under ~70 km. **Fountains never close — water is not an off-hours risk; food is.**
+
+**Hydration vest — setup & notes:**
+- **Plain water in the bladder; electrolyte mix in a bottle.** A sugary bladder grows biofilm within days and is near-impossible to clean properly on the road over 9 days.
+- The bite valve lets you drink hands-free — steadier intake on long climbs, and a real safety gain on night descents (no reaching down for a bottle).
+- 2 L on your back adds heat load on 30–40°C exposed sections — on the hottest legs, drink the bladder down first and keep topping the bottles at fountains so the back load is lighter.
+- Rinse the bladder and leave the bite valve open to dry at sleep stops whenever you have clean water and time.
+- The vest is *added* capacity — keep both bottle cages. Use the vest's front pockets for night food and quick-access snacks.
+
+**Electrolytes:** 1 tab per 750 ml bottle (bottles only — keep the bladder plain water). Carry 30+ tabs for the race (e.g., SiS GO, Nuun, Precision Hydration).
 
 ## Night riding food strategy
 
@@ -359,10 +370,54 @@ Four nights of riding (Days 1–6). Night food must be:
 - 1× 500 ml Cola
 - Total: ~1,500–2,000 kcal for 4–6h of night riding
 
-## Risk zones
+## Off-hours & resupply risk
 
-1. **Fužine (km 164, Day 1 ~23:00)** — Village shop closed. Must carry from Trieste.
-2. **Sunday shops (Day 3)** — Croatian village shops may close. Knin (city) is reliable.
-3. **Mostar → Žabljak food desert (km 812–1160, ~350 km)** — Only tiny villages. **Must heavy-load from Mostar.**
-4. **Mountain hut hours** — Slavnik, Platak, Zavižan may close by 20:00. Day 1 arrival at Platak (21:23) is likely too late.
-5. **Early morning arrivals** — Livno (07:48 Mon) is fine; bakeries open early. Ulog (07:39 Tue) is uncertain.
+### Arrival times are best-case — read them as "this time or later"
+
+Every arrival time in this plan comes from the route model, which assumes **100% riding efficiency — no stops**. Real ultra efficiency is 65–72%: you lose 5–6 h/day to eating, navigation, mechanicals and bivvy faff. So you cover **less ground per day than the model**, and you reach each waypoint **later, and on a less predictable day and time** than the table says — by mid-race, potentially most of a day behind.
+
+**Consequence:** never plan on a shop being open at a given time. Provision so you can always reach the next *reliably* open option — a 24 h petrol station, or a big-city shop within opening hours — whatever time you actually arrive.
+
+### What you can and can't bank on
+
+| Resupply | Day | Model arr. | Bankable? | Reality |
+|---|---|---|---|---|
+| Slavnik / Platak / Zavižan huts | 1–2 | day/eve | ⚠️ No | Seasonal, daylight only; Platak (model 21:23) almost certainly shut |
+| Fužine | 1 Fri | 23:02 | ❌ No | Village shop shut by ~20:00 — carry through from Trieste |
+| Gospić | 2 Sat | 20:30 | ⚠️ Marginal | City shops close ~21:00; best-case arrival leaves 30 min and you'll likely be later |
+| Knin | 3 Sun | 16:38 | ⚠️ Sunday | Croatian retail shut by law on Sundays — petrol-station shop + restaurant only |
+| Livno | 4 Mon | 07:48 | ✅ Likely | BiH, weekday morning; bakeries open early (~06:00) |
+| Mostar | 4 Mon | 19:42 | ✅ Mostly | BiH city — shops to ~22:00, late burek shops, 24 h petrol; safe unless badly slipped |
+| Ulog / Miljevina / Popov Most / Brod | 5 Tue | varies | ⚠️ No | Tiny villages — morning ones may not open, evening ones shut |
+| Žabljak | 6 Wed | 12:21 | ✅ Yes | MNE tourist town, midday — wide margin |
+| Nikšić | 7 Thu | 08:52 | ✅ Yes | MNE city, weekday morning |
+| Fountains & checkpoints | — | — | ✅ 24/7 | Water never closes |
+
+Genuinely dependable food resupply: **Žabljak and Nikšić** — plus Mostar and Livno with margin. Everything else is a bonus if open; plan as if it isn't.
+
+### The off-hours backbone: petrol stations
+
+Larger petrol stations on through-roads answer almost every "shop is shut" problem:
+- **Open when shops aren't** — many are 24 h, and in Croatia they are **legally exempt from the Sunday closure.**
+- They stock the ultra staples: pastries, nuts, chocolate, chips, biscuits, cola, energy drinks — often coffee and hot food too.
+- **Restaurants and konobe** are hospitality, not retail: they open later than shops and on Sundays, covering the evening hot meal and the Sunday gap.
+
+**Prep task:** before the race, mark the petrol stations near **Gospić, Knin, Mostar, Žabljak and Nikšić** on your offline maps / GPS, so you're not hunting for one while exhausted.
+
+### Day 3 (Sunday 31 May) — plan around it
+
+Croatian supermarkets and village shops are **closed by law** on Sundays (retailers may open only 16 chosen Sundays a year — don't count on 31 May being one). Day 3 runs entirely on that Sunday. Resupply that day:
+- **CP1 Mazin** — water (checkpoint)
+- **Velika Popina** — water (fountain)
+- **Knin** — **petrol-station shop + a restaurant**, not a supermarket
+
+Knin still has to fuel the 127 km / 10.6 h gap to Livno, so load the petrol station heavy. If you've slipped enough to reach Knin on *Monday* instead, normal shops are open — treat that as a bonus, not the plan.
+
+### Carry-through rule
+
+At each reliable resupply, carry enough to reach the **next** reliable one even if everything between is shut:
+
+1. **Day 1** — carry the whole day from Trieste; Platak hut and Fužine will be closed.
+2. **Gospić → Livno** — the fragile corridor: two marginal Croatian resupplies (Gospić Saturday evening, Knin Sunday) feeding the 127 km Dinara gap. Buy heavy at Gospić while something is open; treat Knin's petrol station as the top-up for the Livno gap.
+3. **Mostar → Žabljak** — the 350 km food desert; the villages don't count. Heavy-load at Mostar (reliable) to cover all of Day 5.
+4. **Mountain huts** — Slavnik, Platak, Zavižan: a hot meal if open is a bonus, never a planned calorie source.
