@@ -79,7 +79,11 @@ fetch_forecast <- function(lat, lon, ele) {
 
   n_hours <- length(body$hourly$time)
   hourly <- tibble(
-    ts       = as.POSIXct(unlist(body$hourly$time), tz = "Europe/Belgrade"),
+    # Open-Meteo returns ISO 8601 timestamps ("2026-05-29T00:00"); the explicit
+    # format is required — without it as.POSIXct silently drops the time and
+    # sets every hour to 00:00, which collapses the night-window aggregation.
+    ts       = as.POSIXct(unlist(body$hourly$time),
+                          format = "%Y-%m-%dT%H:%M", tz = "Europe/Belgrade"),
     temp     = pad_to(body$hourly$temperature_2m, n_hours),
     precip   = pad_to(body$hourly$precipitation, n_hours),
     wind_ms  = pad_to(body$hourly$wind_speed_10m, n_hours),
@@ -113,9 +117,11 @@ night_precip <- hourly |>
   mutate(
     hour     = as.integer(format(ts, "%H")),
     is_night = hour >= NIGHT_START_H | hour < NIGHT_END_H,
+    # as.Date() on a POSIXct defaults to UTC; pass tz so the calendar date
+    # is taken in local time (00:00-01:59 CEST would otherwise roll back a day).
     night_date = if_else(hour < NIGHT_END_H,
-                         as.Date(ts) - 1,
-                         as.Date(ts))
+                         as.Date(ts, tz = "Europe/Belgrade") - 1,
+                         as.Date(ts, tz = "Europe/Belgrade"))
   ) |>
   filter(is_night) |>
   group_by(name, km, ele, night_date) |>
