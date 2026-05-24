@@ -99,6 +99,7 @@ Default top section (already shown): distance to go · ascent remaining · grade
 
 **Climb Detection** (under Activity Profile):
 - **Category threshold:** **Cat 2** — fires ClimbPro on HC + Cat 1 + Cat 2 climbs. Filters out Cat 3/4/Uncategorized so the screen stays calm on rolling sections.
+- **Terrain type:** **Mixed** — TBR has both substantial tarmac and unpaved sections. Paved would undercategorize the off-road climbs; Unpaved would overcategorize the long tarmac stretches. Mixed splits the difference.
 - Category cheat sheet: HC ≈ 1000 m+ gain · Cat 1 ≈ 600–1000 m · Cat 2 ≈ 300–600 m · Cat 3 ≈ 150–300 m · Cat 4 ≈ 80–150 m
 
 Result: device follows the line, beeps if you drift, shuts up otherwise. You manage course corrections.
