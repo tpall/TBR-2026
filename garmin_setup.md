@@ -81,25 +81,27 @@ Default top section (already shown): distance to go · ascent remaining · grade
 
 **Settings → Activity Profiles → TBR Race → Navigation:**
 
-**→ Map**
+**→ Map** *(confirmed location)*
 - **Orientation:** Track up
 - **Auto-zoom:** ON
 
-**→ Routing**
+**→ Routing** *(confirmed location)*
 - **Recalculation:** **OFF** ← the main no-reroute setting (don't auto-route back when off-course)
 - **Calculation method:** *Minimize Distance* (irrelevant when recalc is off, set cleanly)
 - **Avoidance setup:** leave default — won't fire without recalc
 
 **→ Navigation prompts**
-- **Off-course warnings:** ON (beep)
-- **Skip confirmation:** ON (no popup asking if you went off intentionally)
-- **Turn guidance:** ON
+- Sounds/voice for turn cues — set to preference (beep on, voice off saves a touch of battery)
+
+**Off-course warning** — on Edge 1040 this may live under Routing (alongside Recalculation), or as a course-start option when you begin navigating. Toggle ON wherever it appears. Effect: beeps when you drift off the course line. *(May simply be implicit when a course is active.)*
+
+**Turn guidance** — typically tied to the loaded course; make sure the course is set to provide turn cues when you start it.
 
 **ClimbPro** (separate menu — likely Activity Profile → Climb Detection / Climbs):
 - Mode = *All Climbs*
 - Threshold ≈ 500 m gain
 
-Result: device follows the line, beeps if you drift, shuts up otherwise. You manage course corrections.
+Result: device follows the line, beeps if you drift (or stays quiet if your firmware doesn't expose the toggle — drift visibility still works via the map), shuts up otherwise. You manage course corrections.
 
 ---
 
