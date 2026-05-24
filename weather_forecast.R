@@ -16,10 +16,16 @@ invisible(Sys.setlocale("LC_TIME", "C"))
 WAYPOINTS_CSV       <- "waypoints.csv"   # generated once from GPX; see prepare_waypoints.R
 RACE_START          <- as.POSIXct("2026-05-29 09:00:00", tz = "Europe/Belgrade")
 RACE_END            <- as.POSIXct("2026-06-07 23:59:00", tz = "Europe/Belgrade")
+RACE_DAYS_CONTROL   <- 10       # control time used to estimate rider's daily position (conservative)
 NIGHT_START_H       <- 22       # nighttime window 22:00 → 06:00 next day
 NIGHT_END_H         <- 6
 HIGH_ALT_M          <- 1000     # waypoints at/above this elevation get ⛰️ marker
 NIGHT_RAIN_ALERT_MM <- 3        # threshold for "Nights with measurable rain" section
+# Per-date relevance windows — filter out waypoints far from where the rider
+# is expected to be on that date. Conservative: biased toward showing more.
+RELEVANCE_BUFFER_BEHIND <- 150  # km behind rider's daily position to keep
+RELEVANCE_BUFFER_AHEAD  <- 400  # km ahead of rider's daily position to keep
+RELEVANCE_NIGHT_BUFFER  <- 200  # km around sleep position for night-rain alerts
 OUT_MD              <- "weather_forecast.md"
 OUT_JSON            <- "weather_forecast.json"
 
@@ -28,6 +34,37 @@ OUT_JSON            <- "weather_forecast.json"
 waypoints <- read_csv(WAYPOINTS_CSV, show_col_types = FALSE)
 cat("Waypoints:\n")
 print(waypoints, n = Inf)
+
+# ── Per-date relevance windows (10-day control-time pacing) ──────────────────
+# For each calendar date the rider has an "expected position" defined by even
+# splitting of the route over the race control time. Forecast tables drop
+# waypoints outside a ±buffer around that position so that, e.g., the Trieste
+# row doesn't appear in Day 5 tables once the rider is in Bosnia.
+
+TOTAL_KM        <- max(waypoints$km)
+PACE_KM_PER_DAY <- TOTAL_KM / RACE_DAYS_CONTROL
+RACE_START_DATE <- as.Date(RACE_START)
+
+day_number <- function(date) {
+  as.integer(as.Date(date) - RACE_START_DATE) + 1L
+}
+
+day_window <- function(date) {
+  n <- day_number(date)
+  if (n < 1) return(c(0, Inf))                     # pre-race: show all
+  km_start <- (n - 1) * PACE_KM_PER_DAY
+  km_end   <- min(n * PACE_KM_PER_DAY, TOTAL_KM)
+  c(km_start - RELEVANCE_BUFFER_BEHIND,
+    km_end   + RELEVANCE_BUFFER_AHEAD)
+}
+
+night_window <- function(date) {
+  n <- day_number(date)
+  if (n < 1) return(c(0, Inf))
+  km_sleep <- min(n * PACE_KM_PER_DAY, TOTAL_KM)
+  c(km_sleep - RELEVANCE_NIGHT_BUFFER,
+    km_sleep + RELEVANCE_NIGHT_BUFFER)
+}
 
 # ── Fetch Open-Meteo daily + hourly ───────────────────────────────────────────
 
@@ -189,6 +226,11 @@ md <- c(
   "",
   sprintf("⛰️ = waypoint above %d m elevation (mountain conditions can differ sharply from valley forecasts).",
           HIGH_ALT_M),
+  "",
+  sprintf("Tables show only waypoints near the rider's expected position on that date — assuming the %d-day control-time pace (≈%.0f km/day), ±%d km behind / ±%d km ahead. Night-rain alerts filtered to ±%d km around the expected sleep position.",
+          RACE_DAYS_CONTROL, PACE_KM_PER_DAY,
+          RELEVANCE_BUFFER_BEHIND, RELEVANCE_BUFFER_AHEAD,
+          RELEVANCE_NIGHT_BUFFER),
   ""
 )
 
@@ -213,7 +255,11 @@ if (nrow(race_rows) == 0) {
   }
 } else {
   for (d in sort(unique(race_rows$date))) {
-    day <- race_rows |> filter(date == d) |> arrange(km)
+    win <- day_window(d)
+    day <- race_rows |>
+      filter(date == d, km >= win[1], km <= win[2]) |>
+      arrange(km)
+    if (nrow(day) == 0) next
     md <- c(md,
       "",
       sprintf("## %s", format(as.Date(d, origin = "1970-01-01"), "%a %d %b %Y")),
@@ -272,6 +318,12 @@ if (nrow(race_rows) == 0) {
   # ── Night-rain alert summary ────────────────────────────────────────────────
   night_alert <- race_rows |>
     filter(!is.na(night_precip_mm), night_precip_mm >= NIGHT_RAIN_ALERT_MM) |>
+    mutate(
+      n_win_min = vapply(date, \(d) night_window(d)[1], numeric(1)),
+      n_win_max = vapply(date, \(d) night_window(d)[2], numeric(1))
+    ) |>
+    filter(km >= n_win_min, km <= n_win_max) |>
+    select(-n_win_min, -n_win_max) |>
     arrange(date, km)
   if (nrow(night_alert) > 0) {
     md <- c(md,
