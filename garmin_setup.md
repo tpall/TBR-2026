@@ -77,22 +77,27 @@ Default top section (already shown): distance to go · ascent remaining · grade
 ## Navigation — strict GPX following, no rerouting
 
 - **Load** `Trans Balkan Race 2026 __ Issue 1.GPX` as a Course (USB-C → drop into `/Garmin/NewFiles/`)
-- **Map orientation:** Track up
-- **Map auto-zoom:** ON
-- **ClimbPro:** ON, mode = *All Climbs*, threshold ≈ 500 m gain
-- **Turn guidance:** ON
 - **Pre-load** TopoActive Europe map region — verify before departure
 
-**Zero-rerouting settings:**
+**Settings → Activity Profiles → TBR Race → Navigation:**
 
-**Settings → Activity Profiles → TBR Race → Navigation → Course:**
-- **Recalculation:** **OFF** ← the main one (no auto-route back when off-course)
-- **Off-Course Warnings:** ON (beep only — alerts, doesn't reroute)
-- **Skip Confirmation:** ON (no popups asking if you went off intentionally)
+**→ Map**
+- **Orientation:** Track up
+- **Auto-zoom:** ON
 
-**Settings → Routing:**
-- **Calculation Method:** *Minimize Distance* (irrelevant when recalc is off, but set cleanly)
-- **Avoidance Setup:** leave default — won't fire without recalc
+**→ Routing**
+- **Recalculation:** **OFF** ← the main no-reroute setting (don't auto-route back when off-course)
+- **Calculation method:** *Minimize Distance* (irrelevant when recalc is off, set cleanly)
+- **Avoidance setup:** leave default — won't fire without recalc
+
+**→ Navigation prompts**
+- **Off-course warnings:** ON (beep)
+- **Skip confirmation:** ON (no popup asking if you went off intentionally)
+- **Turn guidance:** ON
+
+**ClimbPro** (separate menu — likely Activity Profile → Climb Detection / Climbs):
+- Mode = *All Climbs*
+- Threshold ≈ 500 m gain
 
 Result: device follows the line, beeps if you drift, shuts up otherwise. You manage course corrections.
 
