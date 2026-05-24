@@ -36,8 +36,8 @@ Wake the Edge at the start line with both sensors connected — re-pairing mid-r
 **Page 2 — Map** · Layout: full-screen map, track-up
 
 **Page 3 — Day & forecast** · Layout **6A** (2 large + 4 small)
-- Large: **Sunset time** · **Distance to next course point** *(the act-on-now fields)*
-- Small: **Total elapsed time** · **Total ascent** · **Avg speed** · **Calories**
+- Large: **Sunset time** · **Distance to Next** *(the act-on-now fields — "Distance to Next" = next course point; do not pick "Distance to Point", which is for saved-Point navigation only)*
+- Small: **Total elapsed time** · **Total ascent** · **Avg speed** · **Total Work (kJ)** *(fueling proxy — 1 kJ ≈ 1 kcal for cycling; more reliable than the Calories estimator)*
 
 **Page 4 — ClimbPro** · auto-triggered
 Default top section (already shown): distance to go · ascent remaining · grade remaining · grade graph.
