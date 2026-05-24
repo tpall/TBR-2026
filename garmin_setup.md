@@ -111,20 +111,20 @@ Result: device follows the line, beeps if you drift, shuts up otherwise. You man
 
 ## System / power — the battery game
 
-| Setting | Value | Likely menu |
+| Setting | Value | Menu |
 |---|---|---|
-| GPS mode | **GPS only** (skip Multi-band — saves ~30%) | Activity Profile → Positioning (or GPS Settings) |
-| Battery Saver | ON, auto-engage at 20% | Settings → System → Battery Saver *(also a shortcut from the status bar swipe-down)* |
+| GPS mode | **GPS only** (skip Multi-band — saves ~30%) | Activity Profile → Positioning |
+| Battery Saver | ON, auto-engage at 20% | Settings → System → Battery Saver *(also via status bar swipe-down)* |
 | Backlight brightness | Lowest | Settings → System → Display → Backlight |
 | Backlight timeout | 8–10 sec | Settings → System → Display → Backlight |
 | Color mode | Dark | Settings → System → Display → Color Mode |
-| Auto Off (idle power-off) | 15 min | Settings → System → Auto Off |
-| Beep volume / Tones | High *(need to hear food alerts over wind)* | Settings → System → Sounds |
-| Phone connection | **OFF** during ride; toggle on only at CPs to sync | Settings → Phone (top-level) |
-| Smart notifications | OFF | Settings → Phone → Smart Notifications |
-| Wi-Fi | OFF | Settings → Wi-Fi (top-level) |
-| Bluetooth | OFF | Often toggled with Phone connection; otherwise Connectivity |
-| LiveTrack | OFF *(TBR uses a separate dot tracker; LiveTrack just drains your phone)* | Settings → Safety & Tracking → LiveTrack *(or under Connect IQ on some firmware)* |
+| Auto Off (idle power-off) | 15 min | *location unclear on this firmware — check System → Display sleep options, or may not be user-configurable* |
+| Tones | **ON** *(only on/off toggle on this device — no volume slider)* | Settings → System → Sounds → Tones |
+| Phone connection | **OFF** during ride; toggle on only at CPs to sync | Settings → Connected Features → Phone |
+| Smart notifications | OFF | Settings → Connected Features → Phone → Smart Notifications |
+| Wi-Fi | OFF | Settings → Connected Features → Wi-Fi |
+| Bluetooth | tied to Phone connection — no separate toggle | (disabled via Phone toggle above) |
+| LiveTrack Auto Start | **OFF** *(TBR uses a separate dot tracker; LiveTrack just drains your phone)* | Settings → Safety & Tracking → LiveTrack → Auto Start |
 
 Toggle Multi-band GPS on **only** in deep canyon sections if you see drift. Off again as soon as you're out.
 
