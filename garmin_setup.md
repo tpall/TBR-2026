@@ -39,8 +39,9 @@ Wake the Edge at the start line with both sensors connected — re-pairing mid-r
 - Large: **Sunset time** · **Distance to next course point** *(the act-on-now fields)*
 - Small: **Total elapsed time** · **Total ascent** · **Avg speed** · **Calories**
 
-**Page 4 — ClimbPro** · auto-triggered, Garmin default layout
-Distance to top · grade · gain remaining · VAM.
+**Page 4 — ClimbPro** · auto-triggered
+Default top section (already shown): distance to go · ascent remaining · grade remaining · grade graph.
+**Customize the 2 lower fields:** **HR** · **Power 3-sec avg** — mirror Page 1 so you don't lose your pacing references when ClimbPro takes over the screen.
 
 **Delete from the profile:** Lap page, Training/performance pages, all Connect IQ data pages. Every wasted draw costs battery.
 
