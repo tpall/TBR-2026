@@ -26,21 +26,21 @@ Wake the Edge at the start line with both sensors connected — re-pairing mid-r
 
 ## Data pages (4 total — fewer = less screen draw)
 
-**Page 1 — Primary glance** (8 fields)
-- Row 1 (large): **Time of day** · **Distance**
-- Row 2 (medium): **HR** · **Power 3-sec avg**
-- Row 3 (small): **Cadence** · **Grade** · **Elevation** · **Battery %**
+> Garmin layout codes: `N` = number of fields, `A/B/C` = field-size arrangement. Pick the variant matching the layout described.
 
-**Page 2 — Map**
-Full-screen map, track-up.
+**Page 1 — Primary glance** · Layout **8A** (2 large top / 2 medium middle / 4 small bottom)
+- Large: **Time of day** · **Distance**
+- Medium: **HR** · **Power 3-sec avg**
+- Small: **Cadence** · **Grade** · **Elevation** · **Battery %**
 
-**Page 3 — Day & forecast** (6 fields)
-- **Total elapsed time** · **Total ascent**
-- **Avg speed** · **Sunset time** *(when do I need lights?)*
-- **Distance to next course point** · **Calories**
+**Page 2 — Map** · Layout: full-screen map, track-up
 
-**Page 4 — ClimbPro** (auto-triggered)
-Default layout: distance to top · grade · gain remaining · VAM.
+**Page 3 — Day & forecast** · Layout **6A** (2 large + 4 small)
+- Large: **Sunset time** · **Distance to next course point** *(the act-on-now fields)*
+- Small: **Total elapsed time** · **Total ascent** · **Avg speed** · **Calories**
+
+**Page 4 — ClimbPro** · auto-triggered, Garmin default layout
+Distance to top · grade · gain remaining · VAM.
 
 **Delete from the profile:** Lap page, Training/performance pages, all Connect IQ data pages. Every wasted draw costs battery.
 
