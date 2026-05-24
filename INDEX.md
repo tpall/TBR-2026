@@ -12,6 +12,8 @@ Race-week home page. Tap a document to open it. In Working Copy, **pull on WiFi*
   Route map, elevation profile, day-by-day schedule, resupply timeline.
 - **[Race strategy →](race-strategy.html)**
   Fitness snapshot, checkpoint timeline, day-by-day pacing, power · nutrition · sleep · mental plan, equipment, hardest sections.
+- **[Pre-race taper & activation →](pre_race_strength_taper.md)**
+  Sun 24 → race morning: gym strength/mobility days, travel-day movement, Trieste shakeout, race-morning activation routine.
 
 ## 🌦️ Weather
 
