@@ -90,18 +90,18 @@ Default top section (already shown): distance to go · ascent remaining · grade
 - **Calculation method:** *Minimize Distance* (irrelevant when recalc is off, set cleanly)
 - **Avoidance setup:** leave default — won't fire without recalc
 
-**→ Navigation prompts**
-- Sounds/voice for turn cues — set to preference (beep on, voice off saves a touch of battery)
+**→ Navigation prompts** *(confirmed: only "Text only" / "Map" options)*
+- **Text only** — shows the turn cue as a text banner instead of redrawing the full map view. Less screen work, kinder to battery.
 
-**Off-course warning** — on Edge 1040 this may live under Routing (alongside Recalculation), or as a course-start option when you begin navigating. Toggle ON wherever it appears. Effect: beeps when you drift off the course line. *(May simply be implicit when a course is active.)*
+**Off-course alert** — automatic on Edge 1040 when a course is active. Fires (beep + banner) when you drift off the line. No user toggle needed.
 
-**Turn guidance** — typically tied to the loaded course; make sure the course is set to provide turn cues when you start it.
+**Turn guidance** — built into the loaded course; cues fire automatically at course-point turns.
 
 **ClimbPro** (separate menu — likely Activity Profile → Climb Detection / Climbs):
 - Mode = *All Climbs*
 - Threshold ≈ 500 m gain
 
-Result: device follows the line, beeps if you drift (or stays quiet if your firmware doesn't expose the toggle — drift visibility still works via the map), shuts up otherwise. You manage course corrections.
+Result: device follows the line, beeps if you drift, shuts up otherwise. You manage course corrections.
 
 ---
 
