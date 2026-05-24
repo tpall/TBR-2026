@@ -53,8 +53,9 @@ Default top section (already shown): distance to go · ascent remaining · grade
 - **HR high (optional):** top of Z4 ≈ **149 bpm** (your zones: top-Z3 = 132, top-Z4 ≈ 149). Catches genuine red-line, not every climb.
 - **Eat alert:** every 20 min
 - **Drink alert:** every 20 min
-- **Off-course:** ON (with beep)
 - **Disable:** lap alerts, segment alerts, phone notifications
+
+*(Off-course warnings are not in the Alerts menu — they live under Navigation → Course; see next section.)*
 
 ---
 
