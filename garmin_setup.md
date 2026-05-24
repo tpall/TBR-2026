@@ -152,18 +152,24 @@ Edge in battery-saver, GPS-only, screen-off = **~60–70 h** real-world per char
 - Top-tube bag with side cable port — bank inside, cable exits to mount
 - **Never open the port cover in rain.** USB-C corrosion kills devices. Wait it out.
 
-### Bank spec to verify
+### Your hardware (confirmed)
 
-- **USB-C PD input** (≥30 W) — bank refills in ~2 h instead of ~6 h
-- **2+ output ports** — Edge + phone simultaneously at overnight stops
-- **Pass-through charging** — run a device off wall *and* refill bank from the same socket
-- **Weight target:** 350–400 g for 20k mAh with decent cells (Nitecore NB20000, Anker 737, Shargeek 100W class)
+- **Nitecore NB20000** — 20k mAh / 72 Wh, 45 W PD in/out, USB-C + USB-A out, 333 g, passthrough ✓
+- **20 W dual-port wall charger** (USB-C + USB-A) — bank's 45 W input is bottlenecked here, so **refill takes ~3.5 h instead of ~2 h**. Fine for sleep stops; tight for short refuels.
 
 ### Also carry
 
 - 2× USB-C cables (1 short for bike, 1 longer for hotel)
-- 1× small **30 W+ PD wall charger** — multi-device fast-fill from one socket
+- 1× USB-A → USB-C cable — lets the wall's USB-A port charge a second device while the bank fills via USB-C
 - Spare CR2032 for the HR strap (not rechargeable — dies silently)
+
+### Workflow at stops
+
+**Overnight (4+ h):**
+1. Wall USB-C → Bank USB-C *(20 W; refills in ~3.5 h)*
+2. Wall USB-A → Phone or Edge *(via USB-A→USB-C cable, ~12 W)*
+
+**Short refuel (<1 h):** skip topping the bank — plug devices directly to wall. Bank gets the next long stop.
 
 Bottom line: 20k is comfortable for this race profile. The discipline that actually matters is **plugging the bank into a wall every time you stop indoors**, not the bank size.
 
