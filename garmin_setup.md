@@ -61,14 +61,17 @@ Default top section (already shown): distance to go · ascent remaining · grade
 
 ## Recording & auto-features
 
-| Setting | Value | Why |
-|---|---|---|
-| Recording | 1-second | Cleaner power data; FIT files stay reasonable when split per day |
-| Auto-pause | **OFF** | Race clock is running — total elapsed = race elapsed, keeps sleep math correct |
-| Auto-lap | OFF | Use manual lap at checkpoints if you want them tagged |
-| Auto-sleep | ON | Powers down if stopped — safety net for forgotten saves |
-| Auto-scroll | OFF | You get the field you expect when you wake the screen |
-| Start notice | OFF | No prompt at start line |
+All per-activity settings under **Settings → Activity Profiles → TBR Race → [submenu]**:
+
+| Setting | Value | Likely submenu | Why |
+|---|---|---|---|
+| Recording interval | **1-second** | Data Recording *(may be system-level: Settings → System → Data Recording)* | Cleaner power data; FIT files stay reasonable when split per day |
+| Auto Pause | **OFF** | Timer (or Auto features) | Race clock is running — total elapsed = race elapsed, keeps sleep math correct |
+| Auto Lap | OFF | Laps (or Auto features) | Use manual lap at checkpoints if you want them tagged |
+| Auto Scroll | OFF | Data Screens | You get the field you expect when you wake the screen |
+| Start Notice | OFF | Notifications (or Activity Settings) | No prompt at start line |
+
+*(Auto-sleep is covered by Auto Off in the System section below — single setting on Edge 1040.)*
 
 **Save & start a new activity every morning.** Do **not** run a single 10-day FIT file — large files can corrupt or fail to upload. Stop on wake, save, start fresh. Loading the same course continues navigation from your current position.
 
@@ -108,19 +111,20 @@ Result: device follows the line, beeps if you drift, shuts up otherwise. You man
 
 ## System / power — the battery game
 
-| Setting | Value |
-|---|---|
-| GPS mode | **GPS-only** (skip Multi-band — saves ~30%) |
-| Battery Saver | ON, auto-engage at 20% |
-| Backlight | Manual, lowest brightness, 8–10 sec timeout |
-| Color mode | Dark |
-| Phone connection | **OFF** during ride; toggle on only at CPs to sync |
-| Wi-Fi | OFF |
-| Bluetooth | OFF |
-| LiveTrack | OFF *(TBR uses a separate dot tracker; LiveTrack just drains your phone)* |
-| Smart notifications | OFF |
-| Auto-power-off | 15 min after stopped |
-| Beep volume | High (need to hear food alerts over wind) |
+| Setting | Value | Likely menu |
+|---|---|---|
+| GPS mode | **GPS only** (skip Multi-band — saves ~30%) | Activity Profile → Positioning (or GPS Settings) |
+| Battery Saver | ON, auto-engage at 20% | Settings → System → Battery Saver *(also a shortcut from the status bar swipe-down)* |
+| Backlight brightness | Lowest | Settings → System → Display → Backlight |
+| Backlight timeout | 8–10 sec | Settings → System → Display → Backlight |
+| Color mode | Dark | Settings → System → Display → Color Mode |
+| Auto Off (idle power-off) | 15 min | Settings → System → Auto Off |
+| Beep volume / Tones | High *(need to hear food alerts over wind)* | Settings → System → Sounds |
+| Phone connection | **OFF** during ride; toggle on only at CPs to sync | Settings → Phone (top-level) |
+| Smart notifications | OFF | Settings → Phone → Smart Notifications |
+| Wi-Fi | OFF | Settings → Wi-Fi (top-level) |
+| Bluetooth | OFF | Often toggled with Phone connection; otherwise Connectivity |
+| LiveTrack | OFF *(TBR uses a separate dot tracker; LiveTrack just drains your phone)* | Settings → Safety & Tracking → LiveTrack *(or under Connect IQ on some firmware)* |
 
 Toggle Multi-band GPS on **only** in deep canyon sections if you see drift. Off again as soon as you're out.
 
