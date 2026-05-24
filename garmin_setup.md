@@ -68,10 +68,9 @@ All per-activity settings under **Settings → Activity Profiles → TBR Race �
 | Recording interval | **1-second** | Data Recording *(may be system-level: Settings → System → Data Recording)* | Cleaner power data; FIT files stay reasonable when split per day |
 | Auto Pause | **OFF** | Timer (or Auto features) | Race clock is running — total elapsed = race elapsed, keeps sleep math correct |
 | Auto Lap | OFF | Laps (or Auto features) | Use manual lap at checkpoints if you want them tagged |
+| Auto Sleep | **ON** | Activity Profile → Auto Sleep *(toggle)* | Powers down when stopped — safety net for forgotten saves |
 | Auto Scroll | OFF | Data Screens | You get the field you expect when you wake the screen |
 | Start Notice | OFF | Notifications (or Activity Settings) | No prompt at start line |
-
-*(Auto-sleep is covered by Auto Off in the System section below — single setting on Edge 1040.)*
 
 **Save & start a new activity every morning.** Do **not** run a single 10-day FIT file — large files can corrupt or fail to upload. Stop on wake, save, start fresh. Loading the same course continues navigation from your current position.
 
@@ -118,7 +117,6 @@ Result: device follows the line, beeps if you drift, shuts up otherwise. You man
 | Backlight brightness | Lowest | Settings → System → Display → Backlight |
 | Backlight timeout | 8–10 sec | Settings → System → Display → Backlight |
 | Color mode | Dark | Settings → System → Display → Color Mode |
-| Auto Off (idle power-off) | 15 min | *location unclear on this firmware — check System → Display sleep options, or may not be user-configurable* |
 | Tones | **ON** *(only on/off toggle on this device — no volume slider)* | Settings → System → Sounds → Tones |
 | Phone connection | **OFF** during ride; toggle on only at CPs to sync | Settings → Connected Features → Phone |
 | Smart notifications | OFF | Settings → Connected Features → Phone → Smart Notifications |
