@@ -49,7 +49,8 @@ Default top section (already shown): distance to go · ascent remaining · grade
 
 ## Alerts
 
-- **HR high:** ceiling at top of Z3 (~150–155 bpm based on FTP 237 W and typical 0.88 LTHR/maxHR — set to your actual LTHR). Keeps climbs honest.
+- **Power high:** ceiling at **90% FTP ≈ 215 W**. Power discipline matters more than HR in an ultra — HR drifts up across days at the same power, so a fixed bpm threshold gets less informative each day.
+- **HR high (optional):** top of Z4 ≈ **149 bpm** (your zones: top-Z3 = 132, top-Z4 ≈ 149). Catches genuine red-line, not every climb.
 - **Eat alert:** every 20 min
 - **Drink alert:** every 20 min
 - **Off-course:** ON (with beep)
