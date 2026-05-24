@@ -30,6 +30,8 @@ Race-week home page. Tap a document to open it. In Working Copy, **pull on WiFi*
   Accreditation timeline, airport transfers, accommodation.
 - **[Petrol stations (`petrol_stations.gpx`)](petrol_stations.gpx)** · *device file*
   83 fuel-station waypoints within 2 km of the route — load onto the GPS / offline maps, don't read on the phone.
+- **[Garmin Edge 1040 setup →](garmin_setup.md)**
+  TBR Race activity profile, data pages, no-rerouting settings, battery strategy with a 20k mAh bank.
 - **[Race facts & rules →](README.md)**
   Schedule, checkpoints, resupply points, hazards, mandatory kit & documents, the 8 rules.
 
