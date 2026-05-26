@@ -175,7 +175,8 @@ Beyond the mandatory list above:
 | Italy / Slovenia | 0–75 | €30 |
 | Croatia | 75–665 | €100 |
 | Bosnia | 665–1060 | €150 + 200 BAM (withdraw at Livno) |
-| Montenegro | 1060–1387 | €100 |
+| Montenegro | 1060–1387 | €100 (food/drinks/supplies on route) |
+| **Lorena Rooms (cash only)** | **finish** | **€252 stay + €100 refundable deposit = €352 at check-in** |
 | Emergency buffer | — | €100 |
 | SIM cards (BiH + MNE) | — | €20 (€10 each) |
 
@@ -191,6 +192,12 @@ Beyond the mandatory list above:
 - First reliable ATM = **Livno** (km 664). Withdraw **150–200 BAM** there.
 - Keep €100–150 EUR backup — pay in EUR where accepted, take BAM as change for small purchases.
 - ATMs reliable in: Livno, Mostar, Nikšić, Kotor. Sparse-to-none in between.
+
+**Montenegro / Lorena Rooms cash tactic:**
+- Pull **€350–400** from **Nikšić ATM (km 1325)** on Day 7 morning. Last reliable stop before the descent to Risan.
+- Backup: Kotor ATM (small detour from Risan ~10 km) if Nikšić ATMs are out / queues.
+- At Lorena check-in: pay €252 stay + €100 deposit (refunded in cash at check-out Tue 9 Jun).
+- Aim to bring at least **€150 EUR from home for Montenegro** as buffer in case ATMs fail (combined with the existing €100 emergency buffer = €250 fallback).
 
 **Cash safety:**
 - [ ] Split cash across 3 places (handlebar bag, frame bag, body wallet)
@@ -227,7 +234,12 @@ Beyond the mandatory list above:
 - [x] **FlixBus** — LJU bus station → Trieste bus station, Wed 27 May **17:10** dep (special-luggage add-on booked; bike box 1360 × 854 × 297 mm slightly over their limit — hoping driver doesn't measure)
 - [ ] **Bus #28** (LJU airport → LJU bus station) — buy ticket on board, €4.50 cash
 - [ ] **Trieste accommodation** — 2 nights (27, 28 May), San Giacomo neighborhood, ask about bike box storage
-- [ ] **Risan accommodation** — finish night(s) through Sun 7 Jun, within 300 m of finish line
+- [x] **Risan accommodation** — **Lorena Rooms**, Risan (5–9 Jun, 4 nights, €252 total, free cancellation)
+  - 150 m from beach / ~2 min walk to finish line (42.5124°N, 18.6956°E)
+  - Host: Branko + family; free private parking, shared kitchen + bathroom
+  - [ ] Send post-booking host message (template at bottom): confirm bike-inside storage, flexible/late night check-in, late checkout Tue 9 Jun
+  - [ ] Confirm cash needs for stay (Montenegro ATM in Nikšić/Kotor en route)
+  - [ ] 1–2 days before finish: send host an updated arrival ETA
 - [x] **Tivat accommodation** — **Studio Tamara Tivat**, Opština Tivat (9–10 Jun)
 - [ ] **airBaltic bike fee** — pre-booked on BT490 (Wed 10 Jun)
 
@@ -241,3 +253,40 @@ Beyond the mandatory list above:
 - **Accreditation/briefing**: Oratorio parrocchiale "San Domenico Savio", Via Amerigo Vespucci 12, 34144 Trieste
 - **Race start**: Campo San Giacomo, Trieste
 - **Parking (if needed)**: Parcheggio Saba San Giacomo, Campo S. Giacomo 16/1, 34137 Trieste
+- **Race finish**: Risan waterfront, 42.5124°N, 18.6956°E (garden of holiday house — riders welcomed there, no sleeping)
+
+---
+
+## Host-message template — Risan booking (paste into Booking chat)
+
+**Pre-booking inquiry:**
+
+> Hello,
+>
+> I'd like to book your apartment for **4 nights from 5 June to 9 June 2026** (1 adult).
+>
+> I'm a participant in the Trans Balkan Race, a bikepacking race finishing in Risan on 7 June. A few questions before I confirm:
+>
+> 1. Is the booking **fully refundable** until ~48 hours before check-in?
+> 2. Can I store **one bicycle inside a locked/covered space** (garden, shed, or ground-floor room)? It's a valuable bike that can't stay outside overnight.
+> 3. My exact arrival day will depend on the race — I may arrive any time between **Thu 4 June and Sun 7 June**, possibly **late at night**. Is flexible / late check-in possible?
+> 4. On the last day (Tue 9 June) I'm moving to Tivat for an early flight on 10 June — would a **late check-out (around 14:00)** be possible?
+>
+> Thank you,
+> Taavi
+
+**Post-booking message (after confirmation):**
+
+> Hello,
+>
+> I've just booked your apartment for **5–9 June 2026** (booking ref: [paste]).
+>
+> I'm racing in the Trans Balkan Race, a self-supported bikepacking race finishing in Risan on the weekend of 7 June. A few practical things to coordinate:
+>
+> - **Arrival window:** anywhere from Thu 4 June afternoon to Sun 7 June evening, depending on my pace. I'll send you my updated ETA once I'm 1–2 days out. I may arrive in the middle of the night and be very tired.
+> - **Bicycle:** I'll have one bike with bags. Could you please confirm where I can store it securely **inside** for the 4 nights (garden / shed / room)?
+> - **Phone:** my number on the route will be **[+372 …]**. I'll be reachable via WhatsApp.
+> - **Check-out 9 June:** I leave for Tivat that evening — would a **late checkout around 14:00** be possible? Happy to discuss.
+>
+> Thank you so much, looking forward to recovering at your place after the race!
+> Taavi
