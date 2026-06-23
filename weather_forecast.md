@@ -1,8 +1,8 @@
 # Trans Balkan Race 2026 — Live Weather Forecast
 
-> Generated **2026-06-22 09:51 UTC** · Source [Open-Meteo](https://open-meteo.com) (16-day forecast, hourly resolution)
+> Generated **2026-06-23 07:54 UTC** · Source [Open-Meteo](https://open-meteo.com) (16-day forecast, hourly resolution)
 
-**Race window:** Fri 29 May 2026 → Sun 07 Jun 2026 · **Days to start:** -24
+**Race window:** Fri 29 May 2026 → Sun 07 Jun 2026 · **Days to start:** -25
 
 ⛰️ = waypoint above 1000 m elevation (mountain conditions can differ sharply from valley forecasts).
 
