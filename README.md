@@ -2,6 +2,10 @@
 
 Self-supported bikepacking race across the Dinaric Alps, organized by ASD Exploro (3rd edition). ~1400 km, ~27,000 m of climbing, through 4 countries.
 
+> 📱 **Looking for a document? Start at [`INDEX.md`](INDEX.md)** — the race-week home page, with tap-through links to every plan, strategy and weather report.
+>
+> This file is the reference sheet: schedule, checkpoints, resupply, hazards, rules, mandatory kit, logistics.
+
 ## Race Schedule
 
 | Event | Date/Time |
